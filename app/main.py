@@ -17,7 +17,6 @@ def validate(datafile:str=Form(...),
  
     datafile = base64.b64decode(str.encode(datafile))
     shapesfile = base64.b64decode(str.encode(shapesfile))
-    print(datafile)
 
     with open("datafile.ttl", 'wb') as f: 
          f.write(datafile)

@@ -75,8 +75,6 @@ with col4:
         datafile64 = base64.b64encode(datafile) 
         shapesfile64 = base64.b64encode(shapesfile)
 
-        print(type(datafile64))
-
         payload = {"datafile": datafile64,
                 "shapesfile": shapesfile64}
 
@@ -88,7 +86,7 @@ with col4:
         """, language="python")
 
 with col5:
-    st.markdown("## How to use the API in jaascript?")
+    st.markdown("## How to use the API in javascript?")
     with st.expander("See Code"):
         st.code("""
         SOON
