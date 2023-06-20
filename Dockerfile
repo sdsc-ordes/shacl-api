@@ -8,5 +8,7 @@ RUN apt-get install -y python3 pip
 RUN pip install fastapi uvicorn
 
 COPY ./app /app
+COPY ./tests /tests
+WORKDIR /app
 ENTRYPOINT ["bash"]
 #ENTRYPOINT ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "15400"]

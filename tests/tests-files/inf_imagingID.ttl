@@ -1,0 +1,83 @@
+@prefix : <https://epfl.ch/example/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <http://schema.org/> .
+@prefix sd: <https://w3id.org/okn/o/sd#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix schema: <http://schema.org/>.
+@prefix sd: <https://w3id.org/okn/o/sd#>.
+@prefix bio: <https://bioschemas.org/>.
+@prefix spe: <https://openschemas.github.io/spec-container/specifications/>.
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix shsh: <http://www.w3.org/ns/shacl-shacl#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix ex: <http://example.com/ns#> .
+@prefix md4i: <http://w3id.org/nfdi4ing/metadata4ing#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+:ValidSubmission   a schema:SoftwareSourceCode ;
+schema:applicationCategory "Optical flow" ;
+schema:citation <https://en.wikipedia.org/wiki/Optical_flow> ;
+schema:codeRepository <https://gricad-gitlab.univ-grenoble-alpes.fr/ttk/spam> ;
+schema:conditionsOfAccess "Free access" ;
+schema:dateCreated "2022-09-22"^^xsd:date ;
+schema:datePublished "2022-09-26"^^xsd:date ;
+schema:description """Spam is a piece of Python software built upon NumPy and SciPy
+for the analysis and manipulation of 3D and 2D data sets in
+material science, be they from x-ray tomography, random fields
+or any other source.
+A number of common functions are provided that are
+either lacking or slow in Numpy and Scipy, which are expected
+to be used by users within new python scripts.
+These functions are in the tools/ directory, and include tools
+to work with random fields, morphological operations, digital
+image correlation, and labelled images.
+Some of spam's functions transparently call C/C++ functions
+for speed.
+Some user-callable scipts are also provided -- they are more
+complex pieces of code that combine a number of functions and
+which have a command-line interface.
+For the moment the scripts are 3 different image correlation
+techniques.""" ;
+schema:featureList "Digital Image correlation" ;
+schema:image "https://gricad-gitlab.univ-grenoble-alpes.fr/uploads/-/system/project/avatar/64/logo.png?width=64" ;
+schema:isBasedOn <https://google.com> ;
+schema:license <https://spdx.org/licenses/AGPL-3.0-only.html> ;
+schema:maintainer :eddy ;
+schema:name "SPAM (Software for Practical Analysis of Materials)" ;
+schema:operatingSystem "windows 10" ;
+schema:producer :EPFLImagingLab ;
+schema:programmingLanguage "Python" ;
+schema:softwareVersion "1.2.3" ;
+schema:status "Draft" ;
+schema:url <https://medium.com> ;
+schema:url "not a url" ;
+schema:identifier "64" ;
+sd:hasAcknowledgements "1234"^^xsd:integer ;
+schema:hasDocumentation <https://ttk.gricad-pages.univ-grenoble-alpes.fr/spam/index.html> ;
+schema:hasExecutableInstructions <https://ttk.gricad-pages.univ-grenoble-alpes.fr/spam/gettingStarted.html> ;
+sd:readme <https://gricad-gitlab.univ-grenoble-alpes.fr/ttk/spam/-/blob/master/README.rst> ;
+ex:imagingModality "RGB" ;
+.
+
+
+
+:eddy a schema:Person ;
+    schema:email "eddy@eddy.com" ;
+    schema:familyName "Ando" ;
+    schema:givenName "Edward" ;
+    md4i:orcidId "1234.1234.1234.234." ;
+    .
+
+:EPFLImagingLab a schema:Organization ;
+    schema:legalName "EPFL Imaging Lab" ;
+    md4i:hasRorId "EPFL" ;
+    .
+
+
