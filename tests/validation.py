@@ -14,3 +14,4 @@ def runFailedInferenceTest():
 
 
 runValidationTest()
+runFailedInferenceTest()
