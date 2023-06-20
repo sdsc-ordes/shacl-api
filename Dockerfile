@@ -12,5 +12,6 @@ RUN pip install streamlit
 COPY ./app /app
 COPY ./tests /tests
 #WORKDIR /app
+ENTRYPOINT ["bash", "/app/entrypoint.sh"]
 #ENTRYPOINT ["bash"]
-ENTRYPOINT ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "15400"]
+#ENTRYPOINT ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "15400"]
