@@ -7,7 +7,7 @@ def runValidationTest():
         f.write(output.stdout)
 
 def runFailedInferenceTest():
-    output = subprocess.run(["shaclinference.sh", "-datafile", "tests-files/val_fail_imagingID.ttl", "-shapesfile", "tests-files/val_fail_ImagingOntologyShapes.ttl"], stdout=subprocess.PIPE)
+    output = subprocess.run(["shaclvalidate.sh", "-datafile", "tests-files/val_fail_imagingID.ttl", "-shapesfile", "tests-files/val_fail_ImagingOntologyShapes.ttl"], stdout=subprocess.PIPE)
 
     with open("validationFailTest.ttl", 'wb') as f: 
         f.write(output.stdout)

@@ -1,0 +1,93 @@
+@prefix :        <https://epfl.ch/example/> .
+@prefix bio:     <https://bioschemas.org/> .
+@prefix dash:    <http://datashapes.org/dash#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix ex:      <http://example.com/ns#> .
+@prefix graphql: <http://datashapes.org/graphql#> .
+@prefix md4i:    <http://w3id.org/nfdi4ing/metadata4ing#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema:  <http://schema.org/> .
+@prefix sd:      <https://w3id.org/okn/o/sd#> .
+@prefix sh:      <http://www.w3.org/ns/shacl#> .
+@prefix shsh:    <http://www.w3.org/ns/shacl-shacl#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix spe:     <https://openschemas.github.io/spec-container/specifications/> .
+@prefix swa:     <http://topbraid.org/swa#> .
+@prefix tosh:    <http://topbraid.org/tosh#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+[ rdf:type     sh:ValidationReport ;
+  sh:conforms  false ;
+  sh:result    [ rdf:type                      sh:ValidationResult ;
+                 sh:focusNode                  :ValidSubmission ;
+                 sh:resultMessage              "Value must be a valid literal of type string" ;
+                 sh:resultPath                 schema:citation ;
+                 sh:resultSeverity             sh:Violation ;
+                 sh:sourceConstraintComponent  sh:DatatypeConstraintComponent ;
+                 sh:sourceShape                schema:CreativeWork-citation ;
+                 sh:value                      <https://en.wikipedia.org/wiki/Optical_flow>
+               ] ;
+  sh:result    [ rdf:type                      sh:ValidationResult ;
+                 sh:focusNode                  :ValidSubmission ;
+                 sh:resultMessage              "Value does not match pattern \"(/^10\\.\\d{4,9}[-._;()/:A-Z0-9]+$/i)\"" ;
+                 sh:resultPath                 schema:citation ;
+                 sh:resultSeverity             sh:Violation ;
+                 sh:sourceConstraintComponent  sh:PatternConstraintComponent ;
+                 sh:sourceShape                schema:CreativeWork-citation ;
+                 sh:value                      <https://en.wikipedia.org/wiki/Optical_flow>
+               ] ;
+  sh:result    [ rdf:type                      sh:ValidationResult ;
+                 sh:focusNode                  :ValidSubmission ;
+                 sh:resultMessage              "Value must have at least one of the following shapes: _:ddce18d9bd22beec0454a45cbadc25cd, _:17eef25e0a05b64da4fcffc4347374a8" ;
+                 sh:resultPath                 schema:image ;
+                 sh:resultSeverity             sh:Violation ;
+                 sh:sourceConstraintComponent  sh:OrConstraintComponent ;
+                 sh:sourceShape                schema:Thing-image ;
+                 sh:value                      "https://gricad-gitlab.univ-grenoble-alpes.fr/uploads/-/system/project/avatar/64/logo.png?width=64"
+               ] ;
+  sh:result    [ rdf:type                      sh:ValidationResult ;
+                 sh:focusNode                  :ValidSubmission ;
+                 sh:resultMessage              "Value does not have node kind IRI" ;
+                 sh:resultPath                 schema:url ;
+                 sh:resultSeverity             sh:Violation ;
+                 sh:sourceConstraintComponent  sh:NodeKindConstraintComponent ;
+                 sh:sourceShape                schema:Thing-url ;
+                 sh:value                      "not a url"
+               ] ;
+  sh:result    [ rdf:type                      sh:ValidationResult ;
+                 sh:focusNode                  :ValidSubmission ;
+                 sh:resultMessage              "Value must be a valid literal of type string" ;
+                 sh:resultPath                 sd:hasAcknowledgements ;
+                 sh:resultSeverity             sh:Violation ;
+                 sh:sourceConstraintComponent  sh:DatatypeConstraintComponent ;
+                 sh:sourceShape                sd:SoftwareApplication-hasAcknowledgements ;
+                 sh:value                      1234
+               ] ;
+  sh:result    [ rdf:type                      sh:ValidationResult ;
+                 sh:focusNode                  :ValidSubmission ;
+                 sh:resultMessage              "Property needs to have at least 1 value" ;
+                 sh:resultPath                 schema:license ;
+                 sh:resultSeverity             sh:Violation ;
+                 sh:sourceConstraintComponent  sh:MinCountConstraintComponent ;
+                 sh:sourceShape                schema:CreativeWork-license
+               ] ;
+  sh:result    [ rdf:type                      sh:ValidationResult ;
+                 sh:focusNode                  :ValidSubmission ;
+                 sh:resultMessage              "Property needs to have at least 1 value" ;
+                 sh:resultPath                 ex:fairLevel ;
+                 sh:resultSeverity             sh:Violation ;
+                 sh:sourceConstraintComponent  sh:MinCountConstraintComponent ;
+                 sh:sourceShape                ex:fairLevelShape
+               ] ;
+  sh:result    [ rdf:type                      sh:ValidationResult ;
+                 sh:focusNode                  :ValidSubmission ;
+                 sh:resultMessage              "Not a value from the sh:in enumeration" ;
+                 sh:resultPath                 ex:imagingModality ;
+                 sh:resultSeverity             sh:Violation ;
+                 sh:sourceConstraintComponent  sh:InConstraintComponent ;
+                 sh:sourceShape                ex:SoftwareApplication-imagingModalityShape ;
+                 sh:value                      "RGB"
+               ]
+] .
