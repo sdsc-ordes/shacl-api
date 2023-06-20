@@ -5,10 +5,12 @@ RUN apt-get update
 
 RUN apt-get install -y python3 pip
 
-RUN pip install fastapi uvicorn
+RUN pip install fastapi uvicorn python-multipart
+
+RUN pip install streamlit
 
 COPY ./app /app
 COPY ./tests /tests
-WORKDIR /app
-ENTRYPOINT ["bash"]
-#ENTRYPOINT ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "15400"]
+#WORKDIR /app
+#ENTRYPOINT ["bash"]
+ENTRYPOINT ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "15400"]
