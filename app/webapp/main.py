@@ -5,12 +5,21 @@ import base64
 
 st.set_page_config(layout="wide")
 
+st.image("https://datascience.ch/wp-content/uploads/2020/09/logo-SDSC-transparent.png", width=200)
 st.title("shaclAPI")
-st.write("Validation and Inference")
-option = st.radio("Which analysis would you like to do?",
+
+cola, colb, colc, _,_,_,_ = st.columns(7)
+
+with cola:
+    st.write("Validation and Inference")
+
+with colb:
+    option = st.radio("Which analysis would you like to do?",
         ("Validation", "Inference"))
-port = st.radio("Which port is the API using?",
-        ("15400", "8000"))
+    
+with colc:
+    port = st.radio("Which port is the API using?",
+            ("15400", "8000"))
 
 
 st.markdown("""---""")
