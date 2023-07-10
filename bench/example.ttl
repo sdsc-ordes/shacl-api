@@ -1,0 +1,65 @@
+@prefix bio: <https://bioschemas.org/> .
+@prefix ex: <http://example.com/> .
+@prefix schema: <http://schema.org/> .
+@prefix sd: <https://example.org/standard/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+[] a schema:SoftwareApplication ;
+    ex:requiresGPU false ;
+    schema:applicationCategory "test" ;
+    schema:citation "test" ;
+    schema:codeRepository "test" ;
+    schema:conditionsOfAccess "test" ;
+    schema:dateCreated "2016-06-01T14:41:36-08:00" ;
+    schema:datePublished "2016-06-01T14:41:36-08:00" ;
+    schema:description "test" ;
+    schema:featureList "test" ;
+    schema:identifier "test" ;
+    schema:image [ a schema:ImageObject ;
+            schema:keywords "logo" ;
+            schema:uri "http://example.com" ] ;
+    schema:isAccessibleForFree true ;
+    schema:isBasedOn "test" ;
+    schema:license "test" ;
+    schema:maintainer [ a schema:Person ;
+            schema:familyName "ttt" ;
+            schema:givenName "yyyyy" ;
+            schema:legalName "xxxx" ] ;
+    schema:memoryRequirements "test" ;
+    schema:name "test" ;
+    schema:operatingSystem "test" ;
+    schema:processorRequirements "test" ;
+    schema:producer [ a schema:Person ;
+            schema:familyName "ttt" ;
+            schema:givenName "yyyyy" ;
+            schema:legalName "xxxx" ] ;
+    schema:programmingLanguage "test" ;
+    schema:softwareRequirements "test" ;
+    schema:softwareVersion "test" ;
+    schema:status "test" ;
+    schema:supportingData [ a schema:DataFeed ;
+            schema:contentURL "ttt" ;
+            schema:description "tdeu" ;
+            schema:name "name" ] ;
+    schema:url "test" ;
+    sd:hasAcknowledgements "test" ;
+    sd:hasDocumentation "test" ;
+    sd:hasExecutableInstructions "test" ;
+    sd:hasExecutableNotebook "test" ;
+    sd:hasFunding [ a sd:FundingInformation ;
+            schema:identifier "ttt" ;
+            schema:sponsor [ a schema:Person ;
+                    schema:familyName "ttt" ;
+                    schema:givenName "yyyyy" ;
+                    schema:legalName "xxxx" ] ;
+            sd:fundingGrant "eeee" ] ;
+    sd:hasInput [ a sd:DatasetSpecification ;
+            sd:hasDimensionality 3 ] ;
+    sd:hasOutput [ a sd:DatasetSpecification ;
+            sd:hasDimensionality 3 ] ;
+    sd:hasParameter [ a bio:FormalParameter ;
+            schema:description "ttt" ;
+            schema:name "yyyy" ;
+            sd:hasDimensionality 3 ] ;
+    sd:readme "test" .
+

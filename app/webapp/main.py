@@ -60,7 +60,7 @@ with col3:
         r = requests.post(url, data=payload)
         output = r.json()["output"]
         with st.expander("See Output"):
-            st.code(output, language="ttl") #line_numbers
+            st.code(output) #line_numbers
 
         st.download_button('Download TTL', output, file_name='output.ttl')
 
@@ -100,7 +100,7 @@ with col5:
         st.code("""
         SOON
             
-        """, language="python")
+        """, language="javascript")
 
 st.markdown("""---""")
 st.markdown("Developed with <3 by ORDES SDSC Team.")

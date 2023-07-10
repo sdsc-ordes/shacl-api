@@ -7,7 +7,7 @@ RUN apt-get install -y python3 pip
 
 RUN pip install fastapi uvicorn python-multipart
 
-RUN pip install streamlit
+RUN pip install streamlit rdflib
 
 COPY ./app /app
 COPY ./tests /tests
