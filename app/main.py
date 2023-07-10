@@ -16,11 +16,11 @@ def index():
     return {"title": "Hello, welcome to the SHACL API"}
 
 @app.post("/validate-jsonld")
-def validate(data:str):
- 
+def validate(data:str=Form(...)):
+
      # This is generating the datafile necesary to run inference.
      graph = Graph()
-     graph.parse(data, format="json-ld")
+     graph.parse(data=data, format="json-ld")
      
      SCHEMA = Namespace("http://schema.org/")
      graph.namespace_manager.bind('schema', SCHEMA, override=True, replace=True)
@@ -36,18 +36,23 @@ def validate(data:str):
      #with open("shapesfile.ttl", 'wb') as f: 
      #    f.write(shapesfile)
 
-     output = subprocess.run(["shaclvalidate.sh", "-datafile", "datafile.ttl", "-shapesfile", "shapesfile.ttl"], stdout=subprocess.PIPE)
+     output = subprocess.run(["shaclvalidate.sh", "-datafile", "datafile.ttl", "-shapesfile", "/app/shapesfile.ttl"], stdout=subprocess.PIPE)
 
      os.remove("datafile.ttl")
-     os.remove("shapesfile.ttl")
-     with open("validationTest.ttl", 'wb') as f: 
-         f.write(output.stdout)
+     #os.remove("shapesfile.ttl")
 
-     return {"output": output.stdout}
+     ### Read and provide JSON-LD
+     graph = Graph()
+     graph.parse(output.stdout, format="turtle")
+     SCHEMA = Namespace("http://schema.org/")
+     graph.namespace_manager.bind('schema', SCHEMA, override=True, replace=True)
+     jsonld = str(graph.serialize(format='json-ld'))
+
+     return {"output": jsonld}
 
 
 @app.post("/inference-jsonld")
-def validate(data:str):
+def validate(data:str=Form(...)):
  
      # This is generating the datafile necesary to run inference.
      graph = Graph()
@@ -67,14 +72,19 @@ def validate(data:str):
      #with open("shapesfile.ttl", 'wb') as f: 
      #    f.write(shapesfile)
 
-     output = subprocess.run(["shaclinfer.sh", "-datafile", "datafile.ttl", "-shapesfile", "shapesfile.ttl"], stdout=subprocess.PIPE)
+     output = subprocess.run(["shaclinfer.sh", "-datafile", "datafile.ttl", "-shapesfile", "/app/shapesfile.ttl"], stdout=subprocess.PIPE)
 
      os.remove("datafile.ttl")
-     os.remove("shapesfile.ttl")
-     with open("validationTest.ttl", 'wb') as f: 
-         f.write(output.stdout)
+     #os.remove("shapesfile.ttl")
 
-     return {"output": output.stdout}
+     ### Read and provide JSON-LD
+     graph = Graph()
+     graph.parse(output.stdout, format="turtle")
+     SCHEMA = Namespace("http://schema.org/")
+     graph.namespace_manager.bind('schema', SCHEMA, override=True, replace=True)
+     jsonld = str(graph.serialize(format='json-ld'))
+
+     return {"output": jsonld}
 
 
 
