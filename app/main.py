@@ -43,7 +43,7 @@ def validate(data:str=Form(...)):
 
      ### Read and provide JSON-LD
      graph = Graph()
-     graph.parse(output.stdout, format="turtle")
+     graph.parse(data=output.stdout, format="turtle")
      SCHEMA = Namespace("http://schema.org/")
      graph.namespace_manager.bind('schema', SCHEMA, override=True, replace=True)
      jsonld = str(graph.serialize(format='json-ld'))
@@ -79,7 +79,7 @@ def validate(data:str=Form(...)):
 
      ### Read and provide JSON-LD
      graph = Graph()
-     graph.parse(output.stdout, format="turtle")
+     graph.parse(data=output.stdout, format="turtle")
      SCHEMA = Namespace("http://schema.org/")
      graph.namespace_manager.bind('schema', SCHEMA, override=True, replace=True)
      jsonld = str(graph.serialize(format='json-ld'))
