@@ -19,7 +19,8 @@
 		sh:prefix "ex" ;
 		sh:namespace <http://example.com/ns#> ;
 	] .
-
+ex:fairlevel0Shape a sh:NodeShape    
+.
 ex:fairlevel1Shape a sh:NodeShape ;
 			sh:property schema:CreativeWork-license ,
                   [sh:path schema:license ;
@@ -114,6 +115,12 @@ sh:property schema:SoftwareApplication-applicationCategory ,
               sd:SoftwareConfiguration-hasSoftwareImage ,
               ex:SoftwareApplication-imagingModalityShape ,
               ex:fairLevelShape ;
+ sh:rule [
+		a sh:TripleRule ;
+		sh:subject sh:this ;
+		sh:predicate ex:fairLevel ;
+		sh:object "Fair level 0" ;
+		sh:condition ex:fairlevel0Shape ];      
   sh:rule [
 		a sh:TripleRule ;
 		sh:subject sh:this ;
