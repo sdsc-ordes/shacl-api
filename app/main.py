@@ -56,7 +56,7 @@ def validate(data:str=Form(...)):
  
      # This is generating the datafile necesary to run inference.
      graph = Graph()
-     graph.parse(data, format="json-ld")
+     graph.parse(data=data, format="json-ld")
      
      SCHEMA = Namespace("http://schema.org/")
      graph.namespace_manager.bind('schema', SCHEMA, override=True, replace=True)
