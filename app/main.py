@@ -24,7 +24,7 @@ def validate(data:str=Form(...)):
      
      SCHEMA = Namespace("http://schema.org/")
      graph.namespace_manager.bind('schema', SCHEMA, override=True, replace=True)
-     graph.serialize(destination='datafile.ttl',format='turtle')
+     ttl_input = str(graph.serialize(destination='datafile.ttl',format='turtle'))
 
 
      # Download from github and rename as shapesfile.ttl
@@ -48,7 +48,10 @@ def validate(data:str=Form(...)):
      graph.namespace_manager.bind('schema', SCHEMA, override=True, replace=True)
      jsonld = str(graph.serialize(format='json-ld'))
 
-     return {"output": jsonld}
+     return {"jsonldOutput": jsonld, 
+             "ttlOutput": output.stdout, 
+             "jsonldInput": data,
+             "ttlInput": ttl_input}
 
 
 @app.post("/inference-jsonld")
@@ -60,7 +63,7 @@ def validate(data:str=Form(...)):
      
      SCHEMA = Namespace("http://schema.org/")
      graph.namespace_manager.bind('schema', SCHEMA, override=True, replace=True)
-     graph.serialize(destination='datafile.ttl',format='turtle')
+     ttl_input= str(graph.serialize(destination='datafile.ttl',format='turtle'))
 
 
      # Download from github and rename as shapesfile.ttl
@@ -84,7 +87,10 @@ def validate(data:str=Form(...)):
      graph.namespace_manager.bind('schema', SCHEMA, override=True, replace=True)
      jsonld = str(graph.serialize(format='json-ld'))
 
-     return {"output": jsonld}
+     return {"jsonldOutput": jsonld, 
+             "ttlOutput": output.stdout, 
+             "jsonldInput": data,
+             "ttlInput": ttl_input}
 
 
 
