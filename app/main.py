@@ -7,7 +7,7 @@ import base64
 from rdflib import Graph
 from rdflib.namespace import Namespace, NamespaceManager
 
-import requests
+import json
 
 app = FastAPI()
 
@@ -16,7 +16,29 @@ def index():
     return {"title": "Hello, welcome to the SHACL API"}
 
 @app.post("/validate-jsonld")
-def validate(data:str=Form(...)):
+async def validateJsonLD(item: Request,
+             jsonInput: bool | None = None, 
+             jsonOutput: bool | None = None,
+             verbose: bool | None = None):
+     
+     data = await item.json()
+     data = data["data"]
+     if verbose:
+          print(data)
+
+     if jsonInput:
+          if verbose:
+               print("Assuming json")
+               print(f"Type: {type(data)}")
+               print("Cleaning newlines")
+          data = json.dumps(data)
+     else:
+          if verbose:
+               print("Assuming string")
+               print(f"Type: {type(data)}")
+               print("Cleaning newlines")
+          data = data.splitlines()
+          data = ' '.join(data)
 
      # This is generating the datafile necesary to run inference.
      graph = Graph()
@@ -48,6 +70,9 @@ def validate(data:str=Form(...)):
      graph.namespace_manager.bind('schema', SCHEMA, override=True, replace=True)
      jsonld = str(graph.serialize(format='json-ld'))
 
+     if jsonOutput:
+          jsonld = json.loads(jsonld)
+
      return {"jsonldOutput": jsonld, 
              "ttlOutput": output.stdout, 
              "jsonldInput": data,
@@ -55,7 +80,29 @@ def validate(data:str=Form(...)):
 
 
 @app.post("/inference-jsonld")
-def validate(data:str=Form(...)):
+async def inferenceJsonLD(item: Request, 
+                   jsonInput: bool | None = None, 
+                   jsonOutput: bool | None = None,
+                   verbose: bool | None = None):
+     
+     data = await item.json()
+     data = data["data"]
+     if verbose:
+          print(data)
+
+     if jsonInput:
+          if verbose:
+               print("Assuming json")
+               print(f"Type: {type(data)}")
+               print("Cleaning newlines")
+          data = json.dumps(data)
+     else:
+          if verbose:
+               print("Assuming string")
+               print(f"Type: {type(data)}")
+               print("Cleaning newlines")
+          data = data.splitlines()
+          data = ' '.join(data)
  
      # This is generating the datafile necesary to run inference.
      graph = Graph()
@@ -86,6 +133,9 @@ def validate(data:str=Form(...)):
      SCHEMA = Namespace("http://schema.org/")
      graph.namespace_manager.bind('schema', SCHEMA, override=True, replace=True)
      jsonld = str(graph.serialize(format='json-ld'))
+
+     if jsonOutput:
+          jsonld = json.loads(jsonld)
 
      return {"jsonldOutput": jsonld, 
              "ttlOutput": output.stdout, 
@@ -118,7 +168,7 @@ def validate(datafile:str=Form(...),
 
 
 @app.post("/inference")
-def validate(datafile:str=Form(...), 
+def inference(datafile:str=Form(...), 
              shapesfile:str=Form(...)):
  
     datafile = base64.b64decode(str.encode(datafile))
