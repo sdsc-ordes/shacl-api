@@ -8,16 +8,16 @@
 @prefix shsh: <http://www.w3.org/ns/shacl-shacl#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
-@prefix ex: <http://example.com/ns#> .
+@prefix ex: <https://epfl.ch/example/> .
 @prefix md4i: <http://w3id.org/nfdi4ing/metadata4ing#>.
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
-<http://example.org/my-shapes>
+<https://epfl.ch/example/ImagingOntologyShapes>
 	a owl:Ontology ;
 	sh:entailment sh:Rules ;
 	sh:declare [
 		sh:prefix "ex" ;
-		sh:namespace <http://example.com/ns#> ;
+		sh:namespace <https://epfl.ch/example/> ;
 	] .
 ex:fairlevel0Shape a sh:NodeShape    
 .
@@ -160,6 +160,7 @@ sh:property schema:SoftwareApplication-applicationCategory ,
 
 ex:fairLevelShape a sh:PropertyShape ;
 sh:path ex:fairLevel ;
+sh:datatype xsd:string ;
   sh:minCount 1 ;
   .
 
@@ -196,12 +197,12 @@ schema:CreativeWork-citation
   a sh:PropertyShape ;
   sh:path schema:citation ;
   sh:datatype xsd:string ;
-  sh:pattern "(/^10\\.\\d{4,9}[-._;()/:A-Z0-9]+$/i)";
+  sh:pattern "^http.*.+(10\\.\\d{2,9}[-._;()\\/:A-Za-z0-9]+)" ;
 .
 schema:SoftwareSourceCode-codeRepository
   a sh:PropertyShape ;
   sh:path schema:codeRepository ;
-  sh:nodeKind sh:IRI ;
+  sh:pattern "^http.*" ;
   sh:minCount 1 ;
 .
 
@@ -263,7 +264,7 @@ schema:Thing-image
         sh:class schema:ImageObject ;
       ]
       [
-        sh:nodeKind sh:IRI ;
+        sh:pattern "^http.*" ;
       ]
     ) ;
   sh:minCount 1 ;
@@ -288,6 +289,8 @@ schema:CreativeWork-isBasedOn
       [
         sh:nodeKind sh:IRI ;
       ]
+      [sh:pattern "^http.*" ;
+      ]
     ) ;
 .
 
@@ -295,11 +298,11 @@ schema:CreativeWork-keywords
   a sh:PropertyShape ;
   sh:path schema:keywords ;
   sh:or (
-      [
-        sh:class schema:DefinedTerm ;
-      ]
+
       [
         sh:nodeKind sh:IRI ;
+      ]
+      [sh:pattern "^http.*" ;
       ]
       [
         sh:datatype xsd:string ;
@@ -311,14 +314,7 @@ schema:CreativeWork-keywords
 schema:CreativeWork-license
   a sh:PropertyShape ;
   sh:path schema:license ;
-  sh:or (
-      [
-        sh:class schema:CreativeWork ;
-      ]
-      [
-        sh:nodeKind sh:IRI ;
-      ]
-    ) ;
+  sh:pattern ".*spdx\\.org.*" ;
   sh:minCount 1 ;
 .
 
@@ -457,7 +453,7 @@ schema:SoftwareApplication-supportingData
 schema:Thing-url
   a sh:PropertyShape ;
   sh:path schema:url ;
-  sh:nodeKind sh:IRI ;
+  sh:pattern "^http.*" ;
   sh:minCount 1 ;
 .
 
@@ -470,7 +466,7 @@ sd:SoftwareApplication-hasAcknowledgements
 sd:SoftwareApplication-hasDocumentation
     a sh:PropertyShape ;
     sh:path sd:hasDocumentation ;
-    sh:nodeKind sh:IRI ;
+    sh:pattern "^http.*" ;
     .
 
 sd:SoftwareApplication-hasExecutableInstructions
@@ -482,7 +478,7 @@ sd:SoftwareApplication-hasExecutableInstructions
 sd:SoftwareApplication-hasExecutableNotebook
     a sh:PropertyShape ;
     sh:path sd:hasExecutableNotebook ;
-    sh:nodeKind sh:IRI ;
+    sh:pattern "^http.*" ;
     .
 
 sd:SoftwareApplication-hasInput
@@ -506,7 +502,7 @@ sd:SoftwareApplication-hasParameter
 sd:SoftwareApplication-readme
     a sh:PropertyShape ;
     sh:path sd:readme ;
-    sh:nodeKind sh:IRI ;
+    sh:pattern "^http.*" ;
   .
 
 schema:CreativeWork-creativeWorkStatus
@@ -534,8 +530,8 @@ sh:property schema:Thing-description ,
 
 schema:DataDownload-contentURL
   a sh:PropertyShape ;
-  sh:path schema:distribution ;
-  sh:nodeKind sh:IRI ;
+  sh:path schema:contentUrl ;
+  sh:pattern "^http.*" ;
   sh:minCount 1 ;
 .
 
@@ -628,7 +624,6 @@ bio:FormalParameter
 schema:CreativeWork-encodingFormat
   a sh:PropertyShape ;
   sh:path schema:encodingFormat ;
-  sh:nodeKind sh:IRI ;
   sh:pattern ".*iana.org/assignments/media-types/.*" ;
 .
 
@@ -686,7 +681,7 @@ spe:ContainerImage
 
 sd:SoftwareImage-availableInRegistry
     a sh:PropertyShape ;
-    sh:nodeKind sh:IRI ;
+    sh:pattern "^http.*" ;
     sh:path sd:availableInRegistry ;
     sh:minCount 1 ;
     .
@@ -727,7 +722,7 @@ schema:Organization-legalName
 md4i:hasRorId
   a sh:PropertyShape ;
   sh:path md4i:hasRorId ;
-  sh:nodeKind sh:IRI ;
+  sh:pattern "^http.*" ;
   .
 
 schema:Grant-fundedItem
