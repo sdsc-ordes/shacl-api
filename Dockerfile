@@ -1,4 +1,4 @@
-FROM ghcr.io/sdsc-ordes/shacl:latest
+FROM ghcr.io/sdsc-ordes/shacl:1.4.2_b8973a6
 
 RUN apt-get update
 
