@@ -1,5 +1,4 @@
-#FROM python:3.9
-FROM ghcr.io/sdsc-ord/shacl:latest
+FROM ghcr.io/sdsc-ordes/shacl:latest
 
 RUN apt-get update
 
@@ -11,7 +10,5 @@ RUN pip install streamlit rdflib
 
 COPY ./app /app
 COPY ./tests /tests
-#WORKDIR /app
+
 ENTRYPOINT ["bash", "/app/entrypoint.sh"]
-#ENTRYPOINT ["bash"]
-#ENTRYPOINT ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "15400"]
