@@ -19,61 +19,72 @@
 		sh:prefix "ex" ;
 		sh:namespace <https://epfl.ch/example/> ;
 	] .
+
 ex:fairlevel0Shape a sh:NodeShape    
 .
 ex:fairlevel1Shape a sh:NodeShape ;
-			sh:property schema:CreativeWork-license ,
+      sh:targetClass schema:SoftwareSourceCode ;
+			sh:property
                   [sh:path schema:license ;
-                  sh:minCount 1] ,
-                  schema:CreativeWork-citation,
+                  sh:minCount 1;
+                  sh:message "Fair level 1"] ,
+                  
                   [sh:path schema:citation ;
-                  sh:minCount 1] ,
-                  schema:Thing-name ,
+                  sh:minCount 1;
+                  sh:message "Fair level 1"] ,
+                  
                   [sh:path schema:name ;
-                  sh:minCount 1];    
+                  sh:minCount 1;
+                  sh:message "Fair level 1"];    
 .
 
 ex:fairlevel2Shape a sh:NodeShape ;
-			sh:property sd:SoftwareApplication-readme ,
+      sh:targetClass schema:SoftwareSourceCode ;
+			sh:property 
                   [sh:path sd:readme ;
-                  sh:minCount 1] ;
+                  sh:minCount 1 ;
+                  sh:message "Fair level 2"] ;
       sh:and (ex:fairlevel1Shape)
 .
 
 ex:fairlevel3Shape a sh:NodeShape ;
-			sh:property sd:SoftwareApplication-hasInput ,
-                  [sh:path sd:hasInput ;
-                  sh:minCount 1],
-                  sd:SoftwareApplication-hasOutput ,
-                  [sh:path sd:hasOutput ;
-                  sh:minCount 1] ;
+      sh:targetClass schema:SoftwareSourceCode ;
+			sh:property 
+                  [sh:path schema:softwareRequirements ;
+                  sh:minCount 1 ;
+                  sh:message "Fair level 3"] ;
       sh:and (ex:fairlevel2Shape) 
 .
 
 ex:fairlevel4Shape a sh:NodeShape ;
-			sh:property schema:SoftwareApplication-memoryRequirements ,
+      sh:targetClass schema:SoftwareSourceCode ;
+			sh:property 
                   [sh:path schema:memoryRequirements ;
-                  sh:minCount 1] ,
-                  sd:SoftwareApplication-hasDocumentation ,
+                  sh:minCount 1;
+                  sh:message "Fair level 4"] ,
+                  
                   [sh:path sd:hasDocumentation ;
-                  sh:minCount 1] ,
-                  sd:SoftwareApplication-hasParameter ,
+                  sh:minCount 1;
+                  sh:message "Fair level 4"] ,
+                  
                   [sh:path sd:hasParameter ;
-                  sh:minCount 1] ;
+                  sh:minCount 1;
+                  sh:message "Fair level 4"] ;
       sh:and (ex:fairlevel3Shape)
 .
 
 ex:fairlevel5Shape a sh:NodeShape ;
-			sh:property sd:SoftwareApplication-hasExecutableInstructions ,
+      sh:targetClass schema:SoftwareSourceCode ;
+			sh:property
                   [sh:path sd:hasExecutableInstructions ;
-                  sh:minCount 1] ,
-                  sd:SoftwareApplication-hasExecutableNotebook ,
+                  sh:minCount 1;
+                  sh:message "Fair level 5"] ,
+                 
                   [sh:path sd:hasExecutableNotebook ;
-                  sh:minCount 1];
+                  sh:minCount 1;
+                  sh:message "Fair level 5"];
       sh:and (ex:fairlevel4Shape) 
 .
-
-
 
 schema:SoftwareSourceCode
 a sh:NodeShape, rdfs:Class ;
@@ -98,7 +109,6 @@ sh:property schema:SoftwareApplication-applicationCategory ,
               schema:SoftwareApplication-softwareRequirements ,
               schema:SoftwareApplication-processorRequirements ,
               ex:SoftwareApplication-requiresGPU ,
-              schema:SoftwareApplication-softwareVersion ,
               schema:SoftwareApplication-supportingData ,
               schema:CreativeWork-creativeWorkStatus , 
               schema:Thing-url ,
@@ -107,8 +117,6 @@ sh:property schema:SoftwareApplication-applicationCategory ,
               sd:SoftwareApplication-hasDocumentation ,
               sd:SoftwareApplication-hasExecutableInstructions ,
               sd:SoftwareApplication-hasExecutableNotebook ,
-              sd:SoftwareApplication-hasInput ,
-              sd:SoftwareApplication-hasOutput ,
               sd:SoftwareApplication-hasParameter ,
               sd:SoftwareApplication-readme ,
               sd:SoftwareApplication-hasFunding ,
@@ -158,12 +166,6 @@ sh:property schema:SoftwareApplication-applicationCategory ,
 	] ;
 .
 
-ex:fairLevelShape a sh:PropertyShape ;
-sh:path ex:fairLevel ;
-sh:datatype xsd:string ;
-  sh:minCount 1 ;
-  .
-
 ex:SoftwareApplication-imagingModalityShape 
   a sh:PropertyShape ;
   sh:path ex:imagingModality ;
@@ -173,19 +175,13 @@ ex:SoftwareApplication-imagingModalityShape
 schema:SoftwareApplication-applicationCategory
   a sh:PropertyShape ;
   sh:path schema:applicationCategory ;
-  sh:or (
-      [
-        sh:nodeKind sh:IRI ;
-      ]
-      [
-        sh:datatype xsd:string ;
-      ]
-    ) ;
-.
+  sh:in ("Feature extraction" "Segmentation" "Conversion" );
+  .
 schema:SoftwareApplication-processorRequirements
   a sh:PropertyShape ;
   sh:path schema:processorRequirements ;
   sh:datatype xsd:string ;
+  sh:in ("ARM64" "AMD64")
   .
 
 ex:SoftwareApplication-requiresGPU 
@@ -196,14 +192,17 @@ ex:SoftwareApplication-requiresGPU
 schema:CreativeWork-citation
   a sh:PropertyShape ;
   sh:path schema:citation ;
+  sh:minCount 1 ;
+  sh:maxCount 1 ;
   sh:datatype xsd:string ;
-  sh:pattern "^http.*.+(10\\.\\d{2,9}[-._;()\\/:A-Za-z0-9]+)" ;
+  sh:pattern "^http.*" ;
 .
 schema:SoftwareSourceCode-codeRepository
   a sh:PropertyShape ;
   sh:path schema:codeRepository ;
   sh:pattern "^http.*" ;
   sh:minCount 1 ;
+  sh:maxCount 1 ;
 .
 
 schema:CreativeWork-conditionsOfAccess
@@ -218,27 +217,13 @@ schema:CreativeWork-dateCreated
   sh:path schema:dateCreated ;
   sh:minCount 1 ;
   sh:maxCount 1 ;
-  sh:or (
-      [
-        sh:datatype xsd:date ;
-      ]
-      [
-        sh:datatype xsd:dateTime ;
-      ]
-    ) ;
-.
+  sh:datatype xsd:date ;
+  .
 
 schema:CreativeWork-datePublished
   a sh:PropertyShape ;
   sh:path schema:datePublished ;
-  sh:or (
-      [
-        sh:datatype xsd:date ;
-      ]
-      [
-        sh:datatype xsd:dateTime ;
-      ]
-    ) ;
+  sh:datatype xsd:date ;  
   sh:minCount 1 ;
 .
 
@@ -259,16 +244,16 @@ schema:SoftwareApplication-featureList
 schema:Thing-image
   a sh:PropertyShape ;
   sh:path schema:image ;
-  sh:or (
-      [
-        sh:class schema:ImageObject ;
-      ]
-      [
-        sh:pattern "^http.*" ;
-      ]
-    ) ;
+  sh:class schema:ImageObject ; 
   sh:minCount 1 ;
 .
+
+schema:ImagingObject 
+  a sh:NodeShape, rdfs:Class ;
+  sh:property schema:Thing-url ;
+  sh:property schema:CreativeWork-keywords ;
+  .
+
 
 schema:CreativeWork-isAccessibleForFree
   a sh:PropertyShape ;
@@ -279,36 +264,16 @@ schema:CreativeWork-isAccessibleForFree
 schema:CreativeWork-isBasedOn
   a sh:PropertyShape ;
   sh:path schema:isBasedOn ;
-  sh:or (
-      [
-        sh:class schema:CreativeWork ;
-      ]
-      [
-        sh:class schema:Product ;
-      ]
-      [
-        sh:nodeKind sh:IRI ;
-      ]
-      [sh:pattern "^http.*" ;
-      ]
-    ) ;
-.
+  sh:pattern "^http.*" ;
+  .
 
 schema:CreativeWork-keywords
   a sh:PropertyShape ;
   sh:path schema:keywords ;
-  sh:or (
-
-      [
-        sh:nodeKind sh:IRI ;
-      ]
-      [sh:pattern "^http.*" ;
-      ]
-      [
-        sh:datatype xsd:string ;
-      ]
-    ) ;
-    sh:minCount 1 ;
+  sh:datatype xsd:string ;
+  sh:in ("logo" "illustrative image" "before image" "after image") ;
+  sh:minCount 1 ;
+  sh:maxCount 1 ;
 .
 
 schema:CreativeWork-license
@@ -389,7 +354,7 @@ schema:Thing-name
 schema:SoftwareApplication-operatingSystem
   a sh:PropertyShape ;
   sh:path schema:operatingSystem ;
-  sh:datatype xsd:string ;
+  sh:in ("Linux" "Windows" "MacOS" "Other") ;
 .
 
 schema:CreativeWork-producer
@@ -409,40 +374,23 @@ schema:CreativeWork-producer
 schema:SoftwareSourceCode-programmingLanguage
   a sh:PropertyShape ;
   sh:path schema:programmingLanguage ;
-  sh:or (
-      [
-        sh:class schema:ComputerLanguage ;
-      ]
-      [
-        sh:datatype xsd:string ;
-      ]
-    ) ;
+  sh:class schema:ComputerLanguage ;
 .
 
-schema:ComputerLanguage
-a sh:NodeShape ;
-.
 
 schema:SoftwareApplication-softwareRequirements
   a sh:PropertyShape ;
   sh:path schema:softwareRequirements ;
-  sh:or (
-      [
-        sh:nodeKind sh:IRI ;
-      ]
-      [
-        sh:datatype xsd:string ;
-      ]
-    ) ;
+  sh:datatype xsd:string ;
 .
 
 schema:SoftwareApplication-softwareVersion
   a sh:PropertyShape ;
   sh:path schema:softwareVersion ;
   sh:datatype xsd:string ;
-  sh:pattern "[1-9]+\\.[1-9]+\\.[1-9]+" ;
+  sh:pattern "[0-9]+\\.[0-9]+\\.[0-9]+" ;
   sh:minCount 1 ;
-.
+  .
 
 schema:SoftwareApplication-supportingData
   a sh:PropertyShape ;
@@ -454,7 +402,6 @@ schema:Thing-url
   a sh:PropertyShape ;
   sh:path schema:url ;
   sh:pattern "^http.*" ;
-  sh:minCount 1 ;
 .
 
 sd:SoftwareApplication-hasAcknowledgements
@@ -481,18 +428,6 @@ sd:SoftwareApplication-hasExecutableNotebook
     sh:pattern "^http.*" ;
     .
 
-sd:SoftwareApplication-hasInput
-    a sh:PropertyShape ;
-    sh:path sd:hasInput ;
-    sh:class sd:DatasetSpecification ;
-    .
-
-sd:SoftwareApplication-hasOutput
-    a sh:PropertyShape ;
-    sh:path sd:hasOutput ;
-    sh:class sd:DatasetSpecification ;
-    .
-
 sd:SoftwareApplication-hasParameter
     a sh:PropertyShape ;
     sh:path sd:hasParameter ;
@@ -508,15 +443,8 @@ sd:SoftwareApplication-readme
 schema:CreativeWork-creativeWorkStatus
   a sh:PropertyShape ;
   sh:path schema:creativeWorkStatus ;
-  sh:or (
-      [
-        sh:class schema:DefinedTerm ;
-      ]
-      [
-        sh:datatype xsd:string ;
-      ]
-    ) ;
-.
+  sh:datatype xsd:string ;
+  .
 
 schema:DataFeed
 a sh:NodeShape ;
@@ -540,49 +468,16 @@ schema:DataDownload-contentURL
 sd:SoftwareApplication-hasFunding
     a sh:PropertyShape ;
     sh:path sd:hasFunding ;
-    sh:or (
-      [
-        sh:class schema:Grant ;
-      ]
-      [
-        sh:class sd:FundingInformation ;
-      ]) ;
-      .
+    sh:class sd:FundingInformation ;
+    .
     
-
-
-schema:Grant
-a sh:NodeShape ;
-  sh:property schema:Grant-fundedItem ;
-  sh:property schema:Grant-sponsor ;
-  sh:property schema:Thing-identifier ;
-  sh:property sd:FundingInformation-fundingGrant ;
-  sh:property sd:FundingInformation-fundingSource ;
-.
 
 schema:Thing-identifier
   a sh:PropertyShape ;
   sh:path schema:identifier ;
-  sh:or (
-      [
-        sh:class schema:PropertyValue ;
-      ]
-      [
-        sh:nodeKind sh:IRI ;
-      ]
-      [
-        sh:datatype xsd:string ;
-      ]
-    ) ;
+  sh:datatype xsd:string ;
   sh:minCount 1 ;
 .
-
-sd:FundingInformation-fundingGrant
-    a sh:PropertyShape ;
-    sh:path sd:fundingGrant ;
-    sh:datatype xsd:string ;
-    sh:minCount 1 ;
-    .
 
 sd:FundingInformation-fundingSource
     a sh:PropertyShape ;
@@ -598,17 +493,6 @@ sd:FundingInformation
                 sd:FundingInformation-fundingSource ;
     .
 
-sd:DatasetSpecification
-    a sh:NodeShape ;
-    sh:property 
-                # schema:Thing-description ,
-                # schema:CreativeWork-encodingFormat,
-                # schema:Thing-name,
-                sd:DatasetSpecification-hasDimensionality;
-                # sd:DatasetSpecification-hasFormat ,
-                # schema:PropertyValueSpecification-defaultValue, 
-                # schema:PropertyValueSpecification-valueRequired
-    .
 
 bio:FormalParameter
     a sh:NodeShape ;
@@ -631,6 +515,7 @@ sd:DatasetSpecification-hasDimensionality
     a sh:PropertyShape ;
     sh:path sd:hasDimensionality ;
     sh:datatype xsd:integer ;
+    sh:minExclusive 0 ;
     .
 
 sd:DatasetSpecification-hasFormat
@@ -642,14 +527,8 @@ sd:DatasetSpecification-hasFormat
 schema:PropertyValueSpecification-defaultValue
   a sh:PropertyShape ;
   sh:path schema:defaultValue ;
-  sh:or (
-      [
-        sh:class schema:Thing ;
-      ]
-      [
-        sh:datatype xsd:string ;
-      ]
-    ) ;
+  sh:datatype xsd:string ;
+
 .
 
 schema:PropertyValueSpecification-valueRequired
@@ -661,7 +540,7 @@ schema:PropertyValueSpecification-valueRequired
 sd:SoftwareConfiguration-hasSoftwareImage
     a sh:PropertyShape ;
     sh:path sd:hasSoftwareImage ;
-    sh:class sd:SoftwareImage, spe:ContainerImage ;
+    sh:class sd:SoftwareImage;
     .
 
 sd:SoftwareImage    a sh:NodeShape ;
@@ -671,45 +550,24 @@ sd:SoftwareImage    a sh:NodeShape ;
                 sd:SoftwareImage-availableInRegistry ;
     .
 
-spe:ContainerImage 
-    a sh:NodeShape ;
-    sh:property schema:Thing-name ,
-                schema:Thing-description ,
-                schema:SoftwareApplication-softwareVersion ,
-                sd:SoftwareImage-availableInRegistry ;
-    .
+
 
 sd:SoftwareImage-availableInRegistry
     a sh:PropertyShape ;
     sh:pattern "^http.*" ;
     sh:path sd:availableInRegistry ;
-    sh:minCount 1 ;
     .
 
 schema:Dataset-measurementTechnique
   a sh:PropertyShape ;
   sh:path schema:measurementTechnique ;
-  sh:or (
-      [
-        sh:nodeKind sh:IRI ;
-      ]
-      [
-        sh:datatype xsd:string ;
-      ]
-    ) ;
+  sh:datatype xsd:string ;
 .
 
 schema:Dataset-variableMeasured
   a sh:PropertyShape ;
   sh:path schema:variableMeasured ;
-  sh:or (
-      [
-        sh:class schema:PropertyValue ;
-      ]
-      [
         sh:datatype xsd:string ;
-      ]
-    ) ;
 .
 
 schema:Organization-legalName
@@ -725,22 +583,303 @@ md4i:hasRorId
   sh:pattern "^http.*" ;
   .
 
-schema:Grant-fundedItem
-  a sh:PropertyShape ;
-  sh:path schema:fundedItem ;
-  sh:class schema:Thing ;
+
+schema:SoftwareSourceCode
+  a rdfs:Class ;
+  rdfs:comment "A software application." ;
+  rdfs:label "Software application" ;
+  rdfs:subClassOf schema:CreativeWork .
+
+schema:license a rdf:Property;
+  rdfs:comment "A license document that applies to this content, typically indicated by URL.";
+  rdfs:label "License" .
+
+schema:citation a rdf:Property;
+  rdfs:comment "A DOI URL citation to publication about this software. Should always be a full and valid DOI URL.";
+  rdfs:label "Citation" .
+
+schema:dateCreated a rdf:Property;
+  rdfs:comment "The date on which the repository was created.";
+  rdfs:label "Date created" .
+
+schema:datePublished a rdf:Property;
+  rdfs:comment "Date of the latest published release.";
+  rdfs:label "Date published" .
+
+schema:maintainer a rdf:Property;
+  rdfs:comment "A maintainer of a Dataset, software package or other Project. A maintainer is a Person or Organization that manages contributions to, and/or publication of, some (typically complex) artifact.";
+  rdfs:label "Maintainer" .
+
+schema:name a rdf:Property;
+  rdfs:comment "The name of the item.";
+  rdfs:label "Name";
+  rdfs:subPropertyOf rdfs:label .
+
+schema:memoryRequirements a rdf:Property;
+  rdfs:comment "Minimum memory requirements.";
+  rdfs:label "Memory requirements" .
+
+ex:fairLevel a rdf:Property;
+  rdfs:comment "A score of 1-5 rating the Findability, Accessibility, Interoperability and Reusability of a piece of software based on the presence of certain properties for an instance of software";
+  rdfs:label "FAIR Level" .
+
+schema:applicationCategory a rdf:Property;
+  rdfs:comment "Type of software application, e.g. 'Game, Multimedia'.";
+  rdfs:label "Application category" .
+
+schema:codeRepository a rdf:Property;
+  rdfs:comment "Primary link to the repository where the un-compiled, human readable code and related code is located (GitLab, GitHub, CodePlex etc.).";
+  rdfs:label "Code repository" .
+
+schema:conditionsOfAccess a rdf:Property;
+  rdfs:comment "Conditions that affect the availability of, or method(s) of access to, an item. e.g. log-in required ";
+  rdfs:label "Conditions of access" .
+
+schema:description a rdf:Property;
+  rdfs:comment "A description of the item.";
+  rdfs:label "Description" .
+
+schema:featureList a rdf:Property;
+  rdfs:comment "Features or modules provided by this application (and possibly required by other applications).";
+  rdfs:label "Feature list" .
+
+schema:image a rdf:Property;
+  rdfs:comment "An image of the item. This can be a URL or a fully described ImageObject.";
+  rdfs:label "Image" .
+
+schema:isAccessibleForFree a rdf:Property;
+  rdfs:comment "A flag to signal that the item, event, or place is accessible for free.";
+  rdfs:label "Is accessible for free" .
+
+schema:isBasedOn a rdf:Property;
+  rdfs:comment "A resource from which this work is derived or from which it is a modification or adaption.";
+  rdfs:label "Is based on" .
+
+schema:email a rdf:Property;
+  rdfs:comment "Email address.";
+  rdfs:label "E-mail" .
+
+schema:familyName a rdf:Property;
+  rdfs:comment "Family name. In the U.S., the last name of a Person.";
+  rdfs:label "Family name" .
+
+schema:givenName a rdf:Property;
+  rdfs:comment "Given name. In the U.S., the first name of a Person.";
+  rdfs:label "Given name" .
+
+schema:name a rdf:Property;
+  rdfs:comment "The name of a person, in the US their first and last name(s) seperated by spaces";
+  rdfs:label "Name" .
+
+md4i:orcidId a rdf:Property ;
+  rdfs:comment "The ORCID ID of a person" ;
+  rdfs:label "Has ORCID ID" .
+
+md4i:hasRorId a rdf:Property ;
+  rdfs:comment "A Research Organization Registry identifier, that points to a research organization" ;
+  rdfs:label "Has ROR ID" .
+
+schema:legalName a rdf:Property;
+  rdfs:comment "The official name of the organization, e.g. the registered company name.";
+  rdfs:label "Legal name" .
+
+schema:operatingSystem a rdf:Property;
+  rdfs:comment "Operating systems supported (Windows 7, OS X 10.6, Android 1.6).";
+  rdfs:label "Operating system" .
+
+schema:producer a rdf:Property;
+  rdfs:comment "The person or organization who produced the work (e.g. music album, movie, TV/radio series etc.).";
+  rdfs:label "Producer" .
+
+schema:programmingLanguage a rdf:Property;
+  rdfs:comment "The computer programming language.";
+  rdfs:label "Programming Language" .
+
+schema:softwareRequirements a rdf:Property;
+  rdfs:comment "Special third party dependencies (e.g. CUDA, GPU related requirements).";
+  rdfs:label "Software requirements" .
+
+schema:softwareVersion a rdf:Property;
+  rdfs:comment "Version of the software instance.";
+  rdfs:label "Software version" .
+
+schema:url a rdf:Property;
+  rdfs:comment "Fill in any URL related to this repository. e.g. related lab or project website.";
+  rdfs:label "URL" .
+
+schema:identifier a rdf:Property;
+  rdfs:comment "Represents any kind of unique string to identify something, such as ISBNs, GTIN codes, UUIDs etc.";
+  rdfs:label "Identifier" .
+
+schema:defaultValue a rdf:Property;
+  rdfs:comment "The default value of the input.  For properties that expect a literal, the default is a literal value, for properties that expect an object, it's an ID reference to one of the current values.";
+  rdfs:label "Default value" .
+
+schema:valueRequired a rdf:Property;
+  rdfs:comment "Whether the property must be filled in to complete the action.  Default is false.";
+  rdfs:label "Value required" .
+
+schema:supportingData a rdf:Property;
+  rdfs:comment "Supporting data for a SoftwareApplication.";
+  rdfs:label "Supporting data" .
+
+schema:distribution a rdf:Property;
+  rdfs:comment "A downloadable form of this dataset, at a specific location, in a specific format." ;
+  rdfs:label "Distribution" .
+
+schema:encodingFormat a rdf:Property;
+  rdfs:comment "Expressed using a MIME format (http://www.iana.org/assignments/media-types/media-types.xhtml).";
+  rdfs:label "Encoding format" .
+
+schema:measurementTechnique a rdf:Property;
+  rdfs:comment "A technique or technology used in a Dataset corresponding to the method used for measuring the corresponding variable(s)." ;
+  rdfs:label "Measurement technique" .
+
+schema:variableMeasured a rdf:Property;
+  rdfs:comment "The variables that are measured in some dataset, described as text.";
+  rdfs:label "Variable measured" .
+
+ex:imagingModality a rdf:Property;
+  rdfs:comment "Technique or method used to create images of the interior of a body or an object for which this software was designed.";
+  rdfs:label "Imaging modality" .
+
+schema:creativeWorkStatus a rdf:Property;
+  rdfs:comment "The status of a creative work in terms of its stage in a lifecycle. e.g. Incomplete, Draft, Published, Obsolete.";
+  rdfs:label "Creative work status" .
+
+schema:keywords a rdf:Property;
+  rdfs:comment "The keywords/tags used to describe this content."@en;
+  rdfs:label "Keywords"@en .
+
+ex:requiresGPU a rdf:Property;
+  rdfs:comment "Stipulates whether something requires a graphical processing unit such as a NVIDEA or AMD graphics card";
+  rdfs:label "Requires GPU" .
+
+schema:processorRequirements a rdf:Property;
+  rdfs:comment "Processor architecture required to run the application.";
+  rdfs:label "Processor requirements" .
+
+sd:hasInput a rdf:Property;
+  rdfs:comment "Property that links a model configuration to the input types expected by it."@en;
+  rdfs:label "Has input"@en .
+
+sd:hasOutput a rdf:Property;
+  rdfs:comment "Property that expresses what are the outputs of a model"@en;
+  rdfs:label "Has output"@en .
+
+sd:hasParameter a rdf:Property;
+  rdfs:comment "Property that indicates the parameters of a model configuration"@en;
+  rdfs:label "Has parameter"@en .
+
+sd:hasFunding a rdf:Property;
+  rdfs:comment "Property that links a software project to its funding information"@en;
+  rdfs:label "Has funding information"@en .
+
+sd:hasSoftwareImage a rdf:Property;
+  rdfs:comment "Function to link a function with its corresponding container"@en;
+  rdfs:label "Has software image"@en .
+
+sd:fundingSource a rdf:Property;
+  rdfs:comment "Link to the organization funding a software component"@en;
+  rdfs:label "Funding source"@en;
+  rdfs:subPropertyOf owl:topObjectProperty .
+
+sd:readme a rdf:Property;
+  rdfs:comment "URl to the readme file of a software component"@en;
+  rdfs:label "Readme"@en;
+  rdfs:subPropertyOf <https://codemeta.github.io/terms/readme> .
+
+sd:hasDocumentation a rdf:Property;
+  rdfs:comment "Pointer to the documentation of the model"@en;
+  rdfs:label "Has documentation"@en .
+
+sd:hasExecutableInstructions a rdf:Property;
+  rdfs:comment "Human-readable instructions that indicate how a software component should be executed."@en;
+  rdfs:label "Has executable instructions"@en .
+
+sd:hasExecutableNotebook a rdf:Property;
+  rdfs:comment "Property that links a software component with an executable notebook (e.g., Jupyter notebook)."@en;
+  rdfs:label "Has executable notebook"@en .
+
+sd:hasAcknowledgements a rdf:Property;
+  rdfs:comment "String with the people, organizations and other contributors acknowledged by the authors."@en;
+  rdfs:label "Has acknowledgements"@en .
+
+sd:fundingGrant a rdf:Property;
+  rdfs:comment "Grant number used for funding"@en;
+  rdfs:label "Funding grant"@en;
+  rdfs:subPropertyOf <https://codemeta.github.io/terms/funding> .
+
+sd:hasFormat a rdf:Property;
+  rdfs:comment "Format followed by a file. For example, txt, nc, etc."@en;
+  rdfs:label "Has format"@en .
+
+sd:availableInRegistry a rdf:Property;
+  rdfs:comment "URL to registry of where software image can be found. For example, https://hub.docker.com/r/pytorch/pytorch"@en;
+  rdfs:label "Available in registry"@en .
+
+sd:hasDimensionality a rdf:Property;
+  rdfs:comment "Property to indicate dimensionality of the input or output of a dataset specification"@en;
+  rdfs:label "Has dimensionality"@en .
+
+schema:Person
+  a rdfs:Class ;
+  rdfs:comment "A person (alive, dead, undead, or fictional)." ;
+  rdfs:label "Person" ;
+  rdfs:subClassOf schema:Thing ;
+  owl:equivalentClass <http://xmlns.com/foaf/0.1/Person> ;
 .
 
-schema:Grant-sponsor
-  a sh:PropertyShape ;
-  sh:path schema:sponsor ;
-  sh:or (
-      [
-        sh:class schema:Organization ;
-      ]
-      [
-        sh:class schema:Person ;
-      ]
-    ) ;
-  sh:minCount 1 ;
+schema:Organization
+  a rdfs:Class ;
+  rdfs:comment "An organization such as a school, NGO, corporation, club, etc." ;
+  rdfs:label "Organization" ;
+  rdfs:subClassOf schema:Thing ;
 .
+
+schema:ComputerLanguage
+  a rdfs:Class ;
+  rdfs:comment "This type covers computer programming languages such as Scheme and Lisp, as well as other language-like computer representations. Natural languages are best represented with the Language type." ;
+  rdfs:label "Computer language" ;
+  rdfs:subClassOf schema:Intangible ;
+.
+
+
+schema:DataFeed
+  a rdfs:Class ;
+  rdfs:comment "A single feed providing structured information about one or more entities or topics." ;
+  rdfs:label "Data feed" ;
+  rdfs:subClassOf schema:Dataset ;
+.   
+
+
+schema:Grant
+  a rdfs:Class ;
+  rdfs:comment "A grant, typically financial or otherwise quantifiable, of resources." ;
+  rdfs:label "Grant" ;
+  rdfs:subClassOf schema:Intangible ;
+.
+
+sd:FundingInformation
+    rdfs:comment "A class to represent the funding information of a software project"@en ;
+    rdfs:label "Funding Information"@en ; 
+    .
+
+sd:DatasetSpecification
+    rdfs:subClassOf <http://purl.org/linked-data/cube#DataStructureDefinition> ;
+    rdfs:comment "Class designed to describe a type of input or output used or produced by a model. For example, Topoflow has several inputs. One of them is a text file with precipitation values. The representation of this input is an instance of a dataset specification."@en ;
+    rdfs:label "Dataset Specification"@en ;
+    .
+
+bio:FormalParameter
+    rdfs:subClassOf <http://purl.org/linked-data/cube#DataStructureDefinition> ;
+    rdfs:comment "A FormalParameter is an identified variable used to stand for the actual value(s) that are consumed/produced by a set of steps"@en ;
+    rdfs:label "Formal Parameter"@en ;
+
+    .
+
+sd:SoftwareImage    
+    rdfs:subClassOf sd:Software ;
+    rdfs:comment "An image that virtualizes the functionality of a given software. For example, a Docker container."@en ;
+    rdfs:label "Software Image"@en ;
+    .
