@@ -49,19 +49,9 @@ async def validateJsonLD(item: Request,
      ttl_input = str(graph.serialize(destination='datafile.ttl',format='turtle'))
 
 
-     # Download from github and rename as shapesfile.ttl
-     # It seems I can use the token just before the web. 
-     # https://stackoverflow.com/questions/18126559/how-can-i-download-a-single-raw-file-from-a-private-github-repo-using-the-comman
-     #shapesfile = requests.get("https://raw.githubusercontent.com/SDSC-ORD/ImagingPlazaSHACL/main/ImagingOntologyShapes.ttl?token=GHSAT0AAAAAAB6SMHWSF2NPK74LPFTKLDJAZFFZCFA")
-     #shapesfile = shapesfile.content
-
-     #with open("shapesfile.ttl", 'wb') as f: 
-     #    f.write(shapesfile)
-
      output = subprocess.run(["shaclvalidate.sh", "-datafile", "datafile.ttl", "-shapesfile", "/app/shapesfile.ttl"], stdout=subprocess.PIPE)
 
      os.remove("datafile.ttl")
-     #os.remove("shapesfile.ttl")
 
      ### Read and provide JSON-LD
      graph = Graph()
@@ -112,20 +102,9 @@ async def inferenceJsonLD(item: Request,
      graph.namespace_manager.bind('schema', SCHEMA, override=True, replace=True)
      ttl_input= str(graph.serialize(destination='datafile.ttl',format='turtle'))
 
-
-     # Download from github and rename as shapesfile.ttl
-     # It seems I can use the token just before the web. 
-     # https://stackoverflow.com/questions/18126559/how-can-i-download-a-single-raw-file-from-a-private-github-repo-using-the-comman
-     #shapesfile = requests.get("https://raw.githubusercontent.com/SDSC-ORD/ImagingPlazaSHACL/main/ImagingOntologyShapes.ttl?token=GHSAT0AAAAAAB6SMHWSF2NPK74LPFTKLDJAZFFZCFA")
-     #shapesfile = shapesfile.content
-
-     #with open("shapesfile.ttl", 'wb') as f: 
-     #    f.write(shapesfile)
-
      output = subprocess.run(["shaclinfer.sh", "-datafile", "datafile.ttl", "-shapesfile", "/app/shapesfile.ttl"], stdout=subprocess.PIPE)
 
      os.remove("datafile.ttl")
-     #os.remove("shapesfile.ttl")
 
      ### Read and provide JSON-LD
      graph = Graph()
