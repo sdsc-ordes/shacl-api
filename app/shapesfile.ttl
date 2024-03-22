@@ -165,6 +165,7 @@ sh:property schema:SoftwareApplication-applicationCategory ,
 		sh:condition ex:fairlevel5Shape
 	] ;
 .
+
 ex:fairLevelShape a sh:PropertyShape ;
   sh:path ex:fairLevel ;
   sh:datatype xsd:string ;
@@ -511,7 +512,6 @@ sd:FundingInformation
     .
 
 
-
 bio:FormalParameter
     a sh:NodeShape ;
     sh:property schema:Thing-description ,
@@ -600,4 +600,3 @@ md4i:hasRorIdShape
   sh:path md4i:hasRorId ;
   sh:pattern "^http.*" ;
   .
-
