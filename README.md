@@ -37,3 +37,7 @@ Missing -datafile, e.g.: -datafile myfile.ttl
 root@cbb169b97823:/# shaclinfer.sh
 Missing -datafile, e.g.: -datafile myfile.ttl
 ```
+
+# Changelog
+
+v0.0.3: Update shapesfile to v0.0.3
