@@ -8,21 +8,21 @@
 @prefix shsh: <http://www.w3.org/ns/shacl-shacl#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
-@prefix ex: <https://epfl.ch/example/> .
+@prefix imag: <https://imaging-plaza.epfl.ch/ontology#> .
 @prefix md4i: <http://w3id.org/nfdi4ing/metadata4ing#>.
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
-<https://epfl.ch/example/ImagingOntologyShapes>
+<https://imaging-plaza.epfl.ch/ImagingOntologyShapes#>
 	a owl:Ontology ;
 	sh:entailment sh:Rules ;
 	sh:declare [
 		sh:prefix "ex" ;
-		sh:namespace <https://epfl.ch/example/> ;
+		sh:namespace <https://imaging-plaza.epfl.ch/ontology#> ;
 	] .
 
-ex:fairlevel0Shape a sh:NodeShape    
+imag:fairlevel0Shape a sh:NodeShape    
 .
-ex:fairlevel1Shape a sh:NodeShape ;
+imag:fairlevel1Shape a sh:NodeShape ;
       sh:targetClass schema:SoftwareSourceCode ;
 			sh:property
                   [sh:path schema:license ;
@@ -38,25 +38,25 @@ ex:fairlevel1Shape a sh:NodeShape ;
                   sh:message "Fair level 1"];    
 .
 
-ex:fairlevel2Shape a sh:NodeShape ;
+imag:fairlevel2Shape a sh:NodeShape ;
       sh:targetClass schema:SoftwareSourceCode ;
 			sh:property 
                   [sh:path sd:readme ;
                   sh:minCount 1 ;
                   sh:message "Fair level 2"] ;
-      sh:and (ex:fairlevel1Shape)
+      sh:and (imag:fairlevel1Shape)
 .
 
-ex:fairlevel3Shape a sh:NodeShape ;
+imag:fairlevel3Shape a sh:NodeShape ;
       sh:targetClass schema:SoftwareSourceCode ;
 			sh:property 
                   [sh:path schema:softwareRequirements ;
                   sh:minCount 1 ;
                   sh:message "Fair level 3"] ;
-      sh:and (ex:fairlevel2Shape) 
+      sh:and (imag:fairlevel2Shape) 
 .
 
-ex:fairlevel4Shape a sh:NodeShape ;
+imag:fairlevel4Shape a sh:NodeShape ;
       sh:targetClass schema:SoftwareSourceCode ;
 			sh:property 
                   [sh:path schema:memoryRequirements ;
@@ -70,21 +70,39 @@ ex:fairlevel4Shape a sh:NodeShape ;
                   [sh:path sd:hasParameter ;
                   sh:minCount 1;
                   sh:message "Fair level 4"] ;
-      sh:and (ex:fairlevel3Shape)
+      sh:and (imag:fairlevel3Shape)
 .
 
-ex:fairlevel5Shape a sh:NodeShape ;
+imag:fairlevel5Shape a sh:NodeShape ;
       sh:targetClass schema:SoftwareSourceCode ;
 			sh:property
                   [sh:path sd:hasExecutableInstructions ;
                   sh:minCount 1;
                   sh:message "Fair level 5"] ,
                  
-                  [sh:path sd:hasExecutableNotebook ;
+                  [sh:path imag:hasExecutableNotebook ;
                   sh:minCount 1;
                   sh:message "Fair level 5"];
-      sh:and (ex:fairlevel4Shape) 
+      sh:and (imag:fairlevel4Shape) 
 .
+
+imag:FeatureTaggerRule a sh:SPARQLRule ;
+    sh:name "Feature tagger" ;
+    sh:description "This shape is used to extend the initial tagging of a software with it's higher level tags, for ease of retrieval/filtering" ;
+	sh:construct """
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX schema: <http://schema.org/>
+			CONSTRUCT {
+				$this schema:featureList ?parentFeatureLabel .
+                $this schema:featureList ?feature .
+			}
+			WHERE {
+				$this schema:featureList ?feature .
+                ?featureClass rdfs:label ?feature .
+				?featureClass rdfs:subClassOf ?parentFeature.
+                ?parentFeature rdfs:label ?parentFeatureLabel .
+			}
+			""" .
 
 schema:SoftwareSourceCode
 a sh:NodeShape, rdfs:Class ;
@@ -99,6 +117,8 @@ sh:property schema:SoftwareApplication-applicationCategory ,
               schema:Thing-image ,
               schema:CreativeWork-isAccessibleForFree ,
               schema:CreativeWork-isBasedOn ,
+              imag:isPluginModuleOfShape,
+              imag:relatedToOrganizationShape, 
               schema:CreativeWork-license ,
               schema:CreativeWork-maintainer ,
               schema:SoftwareApplication-memoryRequirements ,
@@ -108,91 +128,90 @@ sh:property schema:SoftwareApplication-applicationCategory ,
               schema:SoftwareSourceCode-programmingLanguage ,
               schema:SoftwareApplication-softwareRequirements ,
               schema:SoftwareApplication-processorRequirements ,
-              ex:SoftwareApplication-requiresGPUShape ,
+              imag:SoftwareApplication-requiresGPUShape ,
               schema:SoftwareApplication-supportingData ,
-              schema:CreativeWork-creativeWorkStatus , 
               schema:Thing-url ,
               schema:Thing-identifier ,
               sd:SoftwareApplication-hasAcknowledgements ,
               sd:SoftwareApplication-hasDocumentation ,
               sd:SoftwareApplication-hasExecutableInstructions ,
-              sd:SoftwareApplication-hasExecutableNotebook ,
+              imag:SoftwareApplication-hasExecutableNotebook ,
               sd:SoftwareApplication-hasParameter ,
               sd:SoftwareApplication-readme ,
               sd:SoftwareApplication-hasFunding ,
               sd:SoftwareConfiguration-hasSoftwareImage ,
-              ex:SoftwareApplication-imagingModalityShape ,
-              ex:fairLevelShape ;
+              imag:SoftwareApplication-imagingModalityShape ,
+              imag:fairLevelShape ;
  sh:rule [
 		a sh:TripleRule ;
 		sh:subject sh:this ;
-		sh:predicate ex:fairLevel ;
+		sh:predicate imag:fairLevel ;
 		sh:object "Fair level 0" ;
-		sh:condition ex:fairlevel0Shape ];      
+		sh:condition imag:fairlevel0Shape ];      
   sh:rule [
 		a sh:TripleRule ;
 		sh:subject sh:this ;
-		sh:predicate ex:fairLevel ;
+		sh:predicate imag:fairLevel ;
 		sh:object "Fair level 1" ;
-		sh:condition ex:fairlevel1Shape ];           
+		sh:condition imag:fairlevel1Shape ];           
 
   sh:rule [
 		a sh:TripleRule ;
 		sh:subject sh:this ;
-		sh:predicate ex:fairLevel ;
+		sh:predicate imag:fairLevel ;
 		sh:object "Fair level 2" ;
-		sh:condition ex:fairlevel2Shape ;
+		sh:condition imag:fairlevel2Shape ;
 	] ;
   sh:rule [
 		a sh:TripleRule ;
 		sh:subject sh:this ;
-		sh:predicate ex:fairLevel ;
+		sh:predicate imag:fairLevel ;
 		sh:object "Fair level 3" ;
-		sh:condition ex:fairlevel3Shape ;
+		sh:condition imag:fairlevel3Shape ;
 	] ;
   sh:rule [
 		a sh:TripleRule ;
 		sh:subject sh:this ;
-		sh:predicate ex:fairLevel ;
+		sh:predicate imag:fairLevel ;
 		sh:object "Fair level 4" ;
-		sh:condition ex:fairlevel4Shape
+		sh:condition imag:fairlevel4Shape
 	] ;
   sh:rule [
 		a sh:TripleRule ;
 		sh:subject sh:this ;
-		sh:predicate ex:fairLevel ;
+		sh:predicate imag:fairLevel ;
 		sh:object "Fair level 5" ;
-		sh:condition ex:fairlevel5Shape
+		sh:condition imag:fairlevel5Shape
 	] ;
+  sh:rule imag:FeatureTaggerRule ;
 .
-
-ex:fairLevelShape a sh:PropertyShape ;
-  sh:path ex:fairLevel ;
+imag:fairLevelShape a sh:PropertyShape ;
+  sh:path imag:fairLevel ;
   sh:datatype xsd:string ;
   sh:minCount 1 ;
   .
 
-ex:SoftwareApplication-imagingModalityShape 
+imag:SoftwareApplication-imagingModalityShape 
   a sh:PropertyShape ;
-  sh:path ex:imagingModality ;
-  sh:in ("MRI" "CAT" "X-Ray" "Any") ;
+  sh:path imag:imagingModality ;
+  sh:datatype xsd:string ;
   .
 
 schema:SoftwareApplication-applicationCategory
   a sh:PropertyShape ;
   sh:path schema:applicationCategory ;
-  sh:in ("Feature extraction" "Segmentation" "Conversion" );
+  sh:datatype xsd:string ;
   .
 schema:SoftwareApplication-processorRequirements
   a sh:PropertyShape ;
   sh:path schema:processorRequirements ;
   sh:datatype xsd:string ;
-  sh:in ("ARM64" "AMD64")
+  sh:in ("ARM64" "AMD64" "None")
   .
 
-ex:SoftwareApplication-requiresGPUShape
+imag:SoftwareApplication-requiresGPUShape
   a sh:PropertyShape ;
-  sh:path ex:requiresGPU ;
+  sh:path imag:requiresGPU ;
   sh:datatype xsd:boolean .
 
 schema:CreativeWork-citation
@@ -270,6 +289,18 @@ schema:CreativeWork-isBasedOn
   a sh:PropertyShape ;
   sh:path schema:isBasedOn ;
   sh:pattern "^http.*" ;
+  .
+
+imag:isPluginModuleOfShape
+  a sh:PropertyShape ;
+  sh:path imag:isPluginModuleOf ;
+  sh:datatype xsd:string ;
+  .
+
+imag:relatedToOrganizationShape
+  a sh:PropertyShape ;
+  sh:path imag:relatedToOrganization ;
+  sh:datatype xsd:string ;
   .
 
 schema:CreativeWork-keywords
@@ -388,7 +419,7 @@ schema:CreativeWork-producer
 schema:SoftwareSourceCode-programmingLanguage
   a sh:PropertyShape ;
   sh:path schema:programmingLanguage ;
-  sh:class schema:ComputerLanguage ;
+  sh:datatype xsd:string ;
 .
 
 
@@ -436,10 +467,13 @@ sd:SoftwareApplication-hasExecutableInstructions
     sh:datatype xsd:string ;
     .                           
 
-sd:SoftwareApplication-hasExecutableNotebook
+imag:SoftwareApplication-hasExecutableNotebook
     a sh:PropertyShape ;
-    sh:path sd:hasExecutableNotebook ;
-    sh:pattern "^http.*" ;
+    sh:path imag:hasExecutableNotebook ;
+    sh:class imag:ExecutableNotebook ;
+    sh:property schema:Thing-url , 
+		schema:Thing-name , 
+		schema:Thing-description;
     .
 
 sd:SoftwareApplication-hasParameter
@@ -454,28 +488,21 @@ sd:SoftwareApplication-readme
     sh:pattern "^http.*" ;
   .
 
-schema:CreativeWork-creativeWorkStatus
-  a sh:PropertyShape ;
-  sh:path schema:creativeWorkStatus ;
-  sh:datatype xsd:string ;
-  .
-
 schema:DataFeed
-a sh:NodeShape ;
-sh:property schema:Thing-description ,
+    a sh:NodeShape ;
+    sh:property schema:Thing-description ,
               schema:DataDownload-contentURL ,
               schema:Dataset-measurementTechnique ,
               schema:Thing-name ,
               schema:Dataset-variableMeasured ;
-              
-.   
+    .   
 
 schema:DataDownload-contentURL
   a sh:PropertyShape ;
   sh:path schema:contentUrl ;
   sh:pattern "^http.*" ;
   sh:minCount 1 ;
-.
+  .
 
 
 
@@ -510,6 +537,7 @@ sd:FundingInformation
                 sd:FundingInformation-fundingGrant,
                 sd:FundingInformation-fundingSource ;
     .
+
 
 
 bio:FormalParameter
