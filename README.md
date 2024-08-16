@@ -40,5 +40,6 @@ Missing -datafile, e.g.: -datafile myfile.ttl
 
 # Changelog
 
+v0.0.5: Update Ontology to v0.7
 v0.0.4: Update Ontology to v0.6
 v0.0.3: Update shapesfile to v0.0.3
