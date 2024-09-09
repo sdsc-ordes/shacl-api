@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Request, Form
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import subprocess
 import os
@@ -9,7 +10,24 @@ from rdflib.namespace import Namespace, NamespaceManager
 
 import json
 
+origins = [
+    "http://localhost:8051",
+    "http://localhost:8080",
+    "http://localhost:8000",
+    "http://127.0.0.1:8051",
+    "http://127.0.0.1:8080",
+    "http://127.0.0.1:8000",
+]
+
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 def index():

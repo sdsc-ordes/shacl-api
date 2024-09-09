@@ -10,12 +10,11 @@ Based in https://github.com/SDSC-ORD/shacl
 ## How to use docker?
 
 ```
-docker build -t caviri/shaclapi:latest . 
+docker build -t caviri/shaclapi:latest .
 ```
 
 ```
-docker run -it --rm -p 8000:15400 -p 8501:8501 caviri/shaclapi:latest 
-docker run -it --rm -p 7200:15400 -p 3000:8501 caviri/shaclapi:latest 
+docker run --rm -p 8501:15400 caviri/shaclapi:latest
 ```
 
 ```
