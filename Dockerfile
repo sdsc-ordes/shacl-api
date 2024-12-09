@@ -8,7 +8,7 @@ RUN pip install fastapi uvicorn python-multipart
 
 RUN pip install streamlit rdflib
 
-COPY ./app /app
+COPY ./app /app_py
 COPY ./tests /tests
 
-ENTRYPOINT ["bash", "/app/entrypoint.sh"]
+ENTRYPOINT ["bash", "/app_py/entrypoint.sh"]
