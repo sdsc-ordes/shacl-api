@@ -13,7 +13,7 @@ app = FastAPI()
 
 @app.get("/")
 def index():
-    return {"title": "Hello, welcome to the SHACL API"}
+    return {"title": "Hello, welcome to the SHACL API v0.0.5. Compatible with Ontology v0.8."}
 
 @app.post("/validate-jsonld")
 async def validateJsonLD(item: Request,
