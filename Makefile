@@ -7,13 +7,13 @@ docker-build: ## Build Docker images
 	@echo "🐋 Building docker image"
 
 	$(CONTAINER_RUNTIME) build \
-		-f .docker/Dockerfile \
+		-f tools/docker/Dockerfile \
 		-t $(IMAGE):$(VERSION) \
 		--build-arg VERSION=$(VERSION) \
 		--target api .
 
 	$(CONTAINER_RUNTIME) build \
-		-f .docker/Dockerfile \
+		-f tools/docker/Dockerfile \
 		-t $(IMAGE):$(VERSION)-webapp \
 		--build-arg VERSION=$(VERSION) \
 		--target webapp .
@@ -27,7 +27,7 @@ docker-push: docker-build ## Push Docker images
 docker-compose-up: ## Run the Docker Compose stack
 	@echo "🐋 Running docker-compose"
 	$(CONTAINER_RUNTIME) compose \
-		-f .docker/compose.yml \
+		-f tools/docker/compose.yml \
 		up --build
 
 .PHONY: format

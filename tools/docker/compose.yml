@@ -3,11 +3,11 @@ services:
     environment:
       env_file: .example.env
     build:
-      context: ..
-      dockerfile: .docker/Dockerfile
+      context: ../..
+      dockerfile: ./tools/docker/Dockerfile
       target: webapp
     ports:
       - "8001:15400"
       - "8501:8501"
     volumes:
-      - ../src:/shacl/src
+      - ../../src:/shacl/src

@@ -37,7 +37,7 @@ RUN groupadd --gid 1000 appuser \
 USER appuser
 WORKDIR /shacl
 COPY . .
-COPY .docker/entrypoint.sh /entrypoint.sh
+COPY ./tools/docker/entrypoint.sh /entrypoint.sh
 
 ENV PYTHONUNBUFFERED=1
 RUN pip3 install --break-system-packages -e . 
