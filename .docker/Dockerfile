@@ -1,18 +1,32 @@
+ARG VERSION=latest
+
 FROM ghcr.io/ashleycaselli/shacl:1.4.3_89205df AS base
 
 ### API-only build-stage ###
 FROM base AS api
 
-ENV SHAPES_FILE_URL=https://github.com/sdsc-ordes/imaging-plaza-ontology/releases/download/v0.8/ImagingOntologyCombined.ttl.gz
-ENV PYTHONUNBUFFERED=1
+# Metadata
+LABEL org.opencontainers.image.source https://github.com/sdsc-ordes/shacl-api
+LABEL org.opencontainers.image.licenses AGPL-3.0
+LABEL org.opencontainers.image.title "SHACL API"
+LABEL org.opencontainers.image.description "API for validating RDF data against SHACL shapes."
+LABEL org.opencontainers.image.version ${VERSION}
+
+# Environment
+ENV API_PORT=15400
+ENV WEBAPP_PORT=8501
+ENV SHAPES_PATH=/data/shapes.ttl
+ENV SHAPES_URL='https://github.com/sdsc-ordes/imaging-plaza-ontology/releases/download/v0.8/ImagingOntologyCombined.ttl.gz'
 
 RUN apk update && apk add \
     bash \
     curl \
+    gzip \
     python3 \
     py3-pip \
-    py3-pyarrow \
     shadow \
+    tar \
+    zip \
     && rm -rf /var/lib/apt/lists/*
 
 RUN groupadd --gid 1000 appuser \
@@ -22,14 +36,17 @@ USER appuser
 WORKDIR /shacl
 COPY . .
 
+ENV PYTHONUNBUFFERED=1
 RUN pip3 install --break-system-packages -e . 
 
-EXPOSE 15400
+EXPOSE ${API_PORT}
 
-ENTRYPOINT ["bash", "/shacl/src/entrypoint.sh", "api"]
+ENTRYPOINT ["bash", "/shacl/.docker/entrypoint.sh", "api"]
 
 ### API + Webapp build-stage ###
 FROM api AS webapp
+
+LABEL org.opencontainers.image.version ${VERSION}-webapp
 
 USER root
 RUN apk update && apk add \
@@ -40,7 +57,8 @@ USER appuser
 RUN pip3 install --break-system-packages -e '.[webapp]'
 
 ENV PATH="${PATH}:/home/appuser/.local/bin"
-EXPOSE 8501
 
-ENTRYPOINT ["bash", "/shacl/app/entrypoint.sh", "webapp"]
+EXPOSE ${WEBAPP_PORT}
+
+ENTRYPOINT ["bash", "/shacl/.docker/entrypoint.sh", "webapp"]
 
