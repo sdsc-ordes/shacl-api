@@ -34,9 +34,14 @@ docker-compose-up: ## Run the Docker Compose stack
 format: install ## Format python code
 	ruff format src
 
+.PHONY: lint
+lint: install ## Lint python code
+	ruff check src
+
 .PHONY: install
 install: ## Setup project for development
 	pip install -e '.[webapp,test,dev]'
+
 
 .PHONY: test
 test: install ## Run unit tests
