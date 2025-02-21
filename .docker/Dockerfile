@@ -15,9 +15,10 @@ LABEL org.opencontainers.image.version ${VERSION}
 # Environment
 ENV API_PORT=15400
 ENV WEBAPP_PORT=8501
-ENV SHAPES_PATH=/data/shapes.ttl
+ENV SHAPES_PATH=/shacl/data/shapes.ttl
 # unset or set to "" to disable shapes download
 ENV SHAPES_URL='https://github.com/sdsc-ordes/imaging-plaza-ontology/releases/download/v0.8/ImagingOntologyCombined.ttl.gz'
+ENV PATH="${PATH}:/home/appuser/.local/bin"
 
 RUN apk update && apk add \
     bash \
@@ -36,13 +37,14 @@ RUN groupadd --gid 1000 appuser \
 USER appuser
 WORKDIR /shacl
 COPY . .
+COPY .docker/entrypoint.sh /entrypoint.sh
 
 ENV PYTHONUNBUFFERED=1
 RUN pip3 install --break-system-packages -e . 
 
 EXPOSE ${API_PORT}
 
-ENTRYPOINT ["bash", "/shacl/.docker/entrypoint.sh", "api"]
+ENTRYPOINT ["bash", "/entrypoint.sh", "api"]
 
 ### API + Webapp build-stage ###
 FROM api AS webapp
@@ -57,9 +59,8 @@ USER appuser
 
 RUN pip3 install --break-system-packages -e '.[webapp]'
 
-ENV PATH="${PATH}:/home/appuser/.local/bin"
 
 EXPOSE ${WEBAPP_PORT}
 
-ENTRYPOINT ["bash", "/shacl/.docker/entrypoint.sh", "webapp"]
+ENTRYPOINT ["bash", "/entrypoint.sh", "webapp"]
 
