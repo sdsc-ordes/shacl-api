@@ -39,3 +39,6 @@ test = [
 webapp = [
   "streamlit",
 ]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/shacl-api"]
