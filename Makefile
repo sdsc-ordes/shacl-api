@@ -3,7 +3,7 @@ IMAGE = ghcr.io/sdsc-ordes/shacl-api
 CONTAINER_RUNTIME ?= docker
 
 .PHONY: docker-build
-docker-build: ## Build the Docker image
+docker-build: ## Build Docker images
 	@echo "🐋 Building docker image"
 
 	$(CONTAINER_RUNTIME) build \
@@ -19,7 +19,7 @@ docker-build: ## Build the Docker image
 		--target webapp .
 
 .PHONY: docker-push
-docker-push: docker-build ## Push the Docker image
+docker-push: docker-build ## Push Docker images
 	@echo "🐋 Pushing docker image"
 	$(CONTAINER_RUNTIME) push $(IMAGE):$(VERSION)
 	$(CONTAINER_RUNTIME) push $(IMAGE):$(VERSION)-webapp
