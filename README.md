@@ -1,40 +1,33 @@
 # shaclAPI
 
-Web server wrapping the TopBraid Shacl API tool. 
-Implementated for Imaging Plaza. 
+Web server for RDF data validation, wrapping the TopBraid Shacl API tool. 
 Based on https://github.com/SDSC-ORD/shacl
 
 ## How to use it?
 
 
+### With docker
 
-## How to use docker?
-
-```
-docker build -t sdsc-ordes/shacl-api:latest . 
-```
+We provide a helper make recipe to build two docker images, a small "headless" version with only the REST server, and a larger image that bundles the REST server and a streamlit web application. These two images are differentiated by their tag: `<version>` vs `<version>-webapp`.
 
 ```
-docker run -it --rm -p 8000:15400 -p 8501:8501 sdsc-ordes/shacl-api:latest 
-docker run -it --rm -p 7200:15400 -p 3000:8501 sdsc-ordes/shacl-api:latest 
+make docker-build
 ```
 
-```
-docker-compose up # add -d for detached
-```
-
-## LOGS
+The docker images can be run as follows:
 
 ```
-if [ $1 == validate ] ; then
-	set -- shaclvalidate.sh "$@"
-elif [ $1 == infer ] ; then
-	set -- shaclinfer.sh "$@"
+# Only REST API
+docker run -it --rm -p 8000:15400 sdsc-ordes/shacl-api:latest 
+# REST API + web server
+docker run -it --rm -p 8000:15400 -p 8501:8501 sdsc-ordes/shacl-api:latest-webapp
 ```
 
+
+## With docker compose
+
+For development, it may be more convenient to use our docker compose stack.
+
 ```
-root@cbb169b97823:/# shaclvalidate.sh
-Missing -datafile, e.g.: -datafile myfile.ttl
-root@cbb169b97823:/# shaclinfer.sh
-Missing -datafile, e.g.: -datafile myfile.ttl
+make docker-compose-up
 ```
