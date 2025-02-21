@@ -10,6 +10,7 @@ from rdflib.namespace import Namespace, NamespaceManager
 import json
 
 app = FastAPI()
+SHAPES_PATH = os.getenv("SHAPES_PATH", "/app/shapesfile.ttl")
 
 @app.get("/")
 def index():
@@ -49,7 +50,7 @@ async def validateJsonLD(item: Request,
      ttl_input = str(graph.serialize(destination='datafile.ttl',format='turtle'))
 
 
-     output = subprocess.run(["shaclvalidate.sh", "-datafile", "datafile.ttl", "-shapesfile", "/app/shapesfile.ttl"], stdout=subprocess.PIPE)
+     output = subprocess.run(["shaclvalidate.sh", "-datafile", "datafile.ttl", "-shapesfile", SHAPES_PATH], stdout=subprocess.PIPE)
 
      os.remove("datafile.ttl")
 
@@ -102,7 +103,7 @@ async def inferenceJsonLD(item: Request,
      graph.namespace_manager.bind('schema', SCHEMA, override=True, replace=True)
      ttl_input= str(graph.serialize(destination='datafile.ttl',format='turtle'))
 
-     output = subprocess.run(["shaclinfer.sh", "-datafile", "datafile.ttl", "-shapesfile", "/app/shapesfile.ttl"], stdout=subprocess.PIPE)
+     output = subprocess.run(["shaclinfer.sh", "-datafile", "datafile.ttl", "-shapesfile", "SHAPES_PATH"], stdout=subprocess.PIPE)
 
      os.remove("datafile.ttl")
 
@@ -130,6 +131,7 @@ def validate(datafile:str=Form(...),
     datafile = base64.b64decode(str.encode(datafile))
     shapesfile = base64.b64decode(str.encode(shapesfile))
 
+    # TODO: use tempfile package
     with open("datafile.ttl", 'wb') as f: 
          f.write(datafile)
     
@@ -154,6 +156,7 @@ def inference(datafile:str=Form(...),
     shapesfile = base64.b64decode(str.encode(shapesfile))
     print(datafile)
 
+    # TODO: use tempfile package
     with open("datafile.ttl", 'wb') as f: 
          f.write(datafile)
     

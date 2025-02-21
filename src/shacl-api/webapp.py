@@ -1,7 +1,9 @@
+import os
 import streamlit as st
 import requests 
 import base64
 # This interface is for uploading the files and getting the files back 
+API_PORT = os.getenv("API_PORT", 15400)
 
 st.set_page_config(layout="wide")
 
@@ -19,7 +21,7 @@ with colb:
     
 with colc:
     port = st.radio("Which port is the API using?",
-            ("15400", "8000"))
+            (f"{API_PORT}", "8000"))
 
 
 st.markdown("""---""")
