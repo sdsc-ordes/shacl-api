@@ -31,10 +31,10 @@ if [ -z "$SHAPES_URL" ]; then
 fi
 
 # Start webapp if enabled
-if [ "$1" -eq "webapp" ]; then
+if [ "$1" == "webapp" ]; then
     nohup streamlit run /shacl/src/shacl-api/webapp.py --server.port "${WEBAPP_PORT:-8501}" &
 fi
 
 # Start API server
-python3 -m uvicorn shacl_api.server:app --host 0.0.0.0 --port "${API_PORT:-15400}"
+python3 -m uvicorn src.shacl-api.server:app --host 0.0.0.0 --port "${API_PORT:-15400}"
 
