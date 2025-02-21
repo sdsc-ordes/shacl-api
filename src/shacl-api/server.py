@@ -10,7 +10,7 @@ from rdflib.namespace import Namespace, NamespaceManager
 import json
 
 app = FastAPI()
-SHAPES_PATH = os.getenv("SHAPES_PATH", "/app/shapesfile.ttl")
+SHAPES_PATH = os.getenv("SHAPES_PATH", "shapesfile.ttl")
 
 @app.get("/")
 def index():
