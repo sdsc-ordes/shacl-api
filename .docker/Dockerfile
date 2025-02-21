@@ -16,6 +16,7 @@ LABEL org.opencontainers.image.version ${VERSION}
 ENV API_PORT=15400
 ENV WEBAPP_PORT=8501
 ENV SHAPES_PATH=/data/shapes.ttl
+# unset or set to "" to disable shapes download
 ENV SHAPES_URL='https://github.com/sdsc-ordes/imaging-plaza-ontology/releases/download/v0.8/ImagingOntologyCombined.ttl.gz'
 
 RUN apk update && apk add \

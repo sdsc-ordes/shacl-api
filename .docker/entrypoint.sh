@@ -23,10 +23,12 @@ extract_file() {
 }
 
 # Download and extract shapes
-mkdir -p "$(dirname "$SHAPES_PATH")"
-TMP_FILE=$(mktemp)
-curl -fsSL "$SHAPES_URL" -o "$TMP_FILE"
-extract_file "$TMP_FILE" "$SHAPES_PATH"
+if [ -z "$SHAPES_URL" ]; then
+  mkdir -p "$(dirname "$SHAPES_PATH")"
+  TMP_FILE=$(mktemp)
+  curl -fsSL "$SHAPES_URL" -o "$TMP_FILE"
+  extract_file "$TMP_FILE" "$SHAPES_PATH"
+fi
 
 # Start webapp if enabled
 if [ "$1" -eq "webapp" ]; then
