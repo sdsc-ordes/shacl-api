@@ -1,11 +1,10 @@
 from fastapi import FastAPI, Request, Form
-from fastapi.responses import JSONResponse
 import subprocess
 import os
 import base64
 
 from rdflib import Graph
-from rdflib.namespace import Namespace, NamespaceManager
+from rdflib.namespace import Namespace
 
 import json
 
