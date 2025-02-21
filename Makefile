@@ -31,8 +31,12 @@ docker-compose-up: ## Run the Docker Compose stack
 		up --build
 
 .PHONY: format
-format: ## Format python code
-	ruff format .
+format: install ## Format python code
+	ruff format src
+
+.PHONY: install
+install: ## Setup project for development
+	pip install -e '.[webapp,test,dev]'
 
 .PHONY: help
 help:
