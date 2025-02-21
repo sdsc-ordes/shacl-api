@@ -38,6 +38,10 @@ format: install ## Format python code
 install: ## Setup project for development
 	pip install -e '.[webapp,test,dev]'
 
+.PHONY: test
+test: install ## Run unit tests
+	pytest
+
 .PHONY: help
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
