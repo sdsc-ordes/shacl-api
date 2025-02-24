@@ -6,7 +6,7 @@ on:
       - feat/k8s
 
 jobs:
-  release:
+  charts:
     permissions:
       contents: write
     
