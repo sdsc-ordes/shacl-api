@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shacl-api-dep
+  labels:
+    app.kubernetes.io/name: shacl-api
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+        name: shacl-api
+    spec:
+      selector:
+        matchLabels:
+          app.kubernetes.io/name: shacl-api
+      containers:
+        - image: ghcr.io/sdsc-ordes/shacl-api:latest
+          name: shacl-api
+          ports:
+            - containerPort: 15400
+      restartPolicy: Always
