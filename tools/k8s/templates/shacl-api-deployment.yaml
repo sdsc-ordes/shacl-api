@@ -16,8 +16,13 @@ spec:
         matchLabels:
           app.kubernetes.io/name: shacl-api
       containers:
-        - image: ghcr.io/sdsc-ordes/shacl-api:latest
+        - image: {{ .Values.image }}
           name: shacl-api
           ports:
             - containerPort: 15400
+          env:
+            {{- range $key, $value := .Values.config }}
+            - name: {{ $key }}
+              value: {{ $value }}
+            {{- end }}
       restartPolicy: Always
