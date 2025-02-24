@@ -1,8 +1,9 @@
-name: compose
-description: A generated Helm Chart for compose from Skippbox Kompose
+name: shacl-api
+description: Web service for the TopBraid SHACL validator.
 version: 0.0.1
 apiVersion: v1
 keywords:
-  - compose
-sources:
-home:
+  - rdf
+  - validation
+  - shacl
+home: https://github.com/sdsc-ordes/shacl-api
