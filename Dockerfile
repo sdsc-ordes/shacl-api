@@ -15,7 +15,7 @@ RUN apk update && apk add \
 RUN groupadd --gid 1000 appuser \
     && useradd --uid 1000 --gid 1000 -m appuser
 
-USER appuser
+# USER appuser
 WORKDIR /shacl
 COPY requirements.txt requirements.txt
 

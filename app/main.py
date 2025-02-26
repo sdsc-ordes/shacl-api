@@ -49,7 +49,7 @@ async def validateJsonLD(item: Request,
      ttl_input = str(graph.serialize(destination='datafile.ttl',format='turtle'))
 
 
-     output = subprocess.run(["shaclvalidate.sh", "-datafile", "datafile.ttl", "-shapesfile", "/app/shapesfile.ttl"], stdout=subprocess.PIPE)
+     output = subprocess.run(["shaclvalidate.sh", "-datafile", "datafile.ttl", "-shapesfile", "/shacl/app/shapesfile.ttl"], stdout=subprocess.PIPE)
 
      os.remove("datafile.ttl")
 
@@ -102,7 +102,7 @@ async def inferenceJsonLD(item: Request,
      graph.namespace_manager.bind('schema', SCHEMA, override=True, replace=True)
      ttl_input= str(graph.serialize(destination='datafile.ttl',format='turtle'))
 
-     output = subprocess.run(["shaclinfer.sh", "-datafile", "datafile.ttl", "-shapesfile", "/app/shapesfile.ttl"], stdout=subprocess.PIPE)
+     output = subprocess.run(["shaclinfer.sh", "-datafile", "datafile.ttl", "-shapesfile", "/shacl/app/shapesfile.ttl"], stdout=subprocess.PIPE)
 
      os.remove("datafile.ttl")
 

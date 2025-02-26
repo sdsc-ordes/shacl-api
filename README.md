@@ -15,8 +15,7 @@ docker build -t sdsc-ordes/shacl-api:latest .
 ```
 
 ```
-docker run -it --rm -p 8000:15400 -p 8501:8501 sdsc-ordes/shacl-api:latest 
-docker run -it --rm -p 7200:15400 -p 3000:8501 sdsc-ordes/shacl-api:latest 
+docker run -it --rm -p 8000:15400 -p 8501:8501 -v $(pwd)/app:/app sdsc-ordes/shacl-api:latest 
 ```
 
 ```
