@@ -2,6 +2,20 @@ apiVersion: v1
 entries:
   shacl-api:
   - apiVersion: v1
+    created: "2025-02-26T12:22:12.243608579Z"
+    description: Helm chart for the shacl-api web service based on the TopBraid SHACL
+      validator.
+    digest: a6baeceec3efb2bfc7330b502c6881d7c4044e9eadcc869f0a990a6492e47a01
+    home: https://github.com/sdsc-ordes/shacl-api
+    keywords:
+    - rdf
+    - validation
+    - shacl
+    name: shacl-api
+    urls:
+    - https://github.com/sdsc-ordes/shacl-api/releases/download/shacl-api-0.0.2/shacl-api-0.0.2.tgz
+    version: 0.0.2
+  - apiVersion: v1
     created: "2025-02-24T11:03:07.745146615Z"
     description: Web service for the TopBraid SHACL validator.
     digest: b003cda122a3844a2cb8873313edd243503fc485653f3fa507e4818ed38ad54c
@@ -14,4 +28,4 @@ entries:
     urls:
     - https://github.com/sdsc-ordes/shacl-api/releases/download/shacl-api-0.0.1/shacl-api-0.0.1.tgz
     version: 0.0.1
-generated: "2025-02-24T11:03:07.745151234Z"
+generated: "2025-02-26T12:22:12.243623897Z"
