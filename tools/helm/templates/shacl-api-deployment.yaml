@@ -8,13 +8,14 @@ spec:
   replicas: 1
   strategy:
     type: Recreate
+  selector:
+      matchLabels:
+        app.kubernetes.io/name: shacl-api
   template:
     metadata:
-        name: shacl-api
-    spec:
-      selector:
-        matchLabels:
+        labels: 
           app.kubernetes.io/name: shacl-api
+    spec:
       containers:
         - image: {{ .Values.image }}
           name: shacl-api
