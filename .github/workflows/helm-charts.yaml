@@ -2,8 +2,9 @@ name: Release Helm Charts
 
 on:
   push:
-    branches:
-      - feat/k8s
+    tags:
+      # This is used to trigger the release build.
+      - "chart-*"
 
 jobs:
   charts:
