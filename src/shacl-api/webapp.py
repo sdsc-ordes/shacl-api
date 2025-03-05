@@ -4,7 +4,7 @@ import requests
 import base64
 
 # This interface is for uploading the files and getting the files back
-API_PORT = os.getenv("API_PORT", 15400)
+API_PORT = 15400
 
 st.set_page_config(layout="wide")
 

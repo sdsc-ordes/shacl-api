@@ -13,8 +13,6 @@ LABEL org.opencontainers.image.description="API for validating RDF data against 
 LABEL org.opencontainers.image.version=${VERSION}
 
 # Environment
-ENV API_PORT=15400
-ENV WEBAPP_PORT=8501
 ENV SHAPES_PATH=/shacl/data/shapes.ttl
 # unset or set to "" to disable shapes download
 ENV SHAPES_URL='https://github.com/sdsc-ordes/imaging-plaza-ontology/releases/download/v0.8/ImagingOntologyCombined.ttl.gz'
@@ -42,7 +40,7 @@ COPY ./tools/docker/entrypoint.sh /entrypoint.sh
 ENV PYTHONUNBUFFERED=1
 RUN pip3 install --break-system-packages -e . 
 
-EXPOSE ${API_PORT}
+EXPOSE 15400
 
 ENTRYPOINT ["bash", "/entrypoint.sh", "api"]
 
@@ -60,7 +58,7 @@ USER appuser
 RUN pip3 install --break-system-packages -e '.[webapp]'
 
 
-EXPOSE ${WEBAPP_PORT}
+EXPOSE 8501
 
 ENTRYPOINT ["bash", "/entrypoint.sh", "webapp"]
 
