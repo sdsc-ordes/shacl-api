@@ -6,11 +6,11 @@ FROM ghcr.io/ashleycaselli/shacl:1.4.3_89205df AS base
 FROM base AS api
 
 # Metadata
-LABEL org.opencontainers.image.source https://github.com/sdsc-ordes/shacl-api
-LABEL org.opencontainers.image.licenses AGPL-3.0
-LABEL org.opencontainers.image.title "SHACL API"
-LABEL org.opencontainers.image.description "API for validating RDF data against SHACL shapes."
-LABEL org.opencontainers.image.version ${VERSION}
+LABEL org.opencontainers.image.source="https://github.com/sdsc-ordes/shacl-api"
+LABEL org.opencontainers.image.licenses="AGPL-3.0"
+LABEL org.opencontainers.image.title="SHACL API"
+LABEL org.opencontainers.image.description="API for validating RDF data against SHACL shapes."
+LABEL org.opencontainers.image.version=${VERSION}
 
 # Environment
 ENV API_PORT=15400
