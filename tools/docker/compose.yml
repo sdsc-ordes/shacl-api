@@ -1,7 +1,7 @@
 services:
   shacl_api:
     environment:
-      env_file: .example.env
+      env_file: .env.dist
     build:
       context: ../..
       dockerfile: ./tools/docker/Dockerfile
