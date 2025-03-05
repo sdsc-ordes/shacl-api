@@ -27,7 +27,7 @@ if [ -z "$SHAPES_URL" ]; then
   mkdir -p "$(dirname "$SHAPES_PATH")"
   TMP_FILE=$(mktemp)
   curl -fsSL "$SHAPES_URL" -o "$TMP_FILE"
-  extract_file "$TMP_FILE" "$SHAPES_PATH"
+  extract_file "$TMP_FILE" "data/shapes.ttl"
 fi
 
 # Start webapp if enabled

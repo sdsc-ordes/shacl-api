@@ -12,8 +12,6 @@ LABEL org.opencontainers.image.title="SHACL API"
 LABEL org.opencontainers.image.description="API for validating RDF data against SHACL shapes."
 LABEL org.opencontainers.image.version=${VERSION}
 
-# Environment
-ENV SHAPES_PATH=/shacl/data/shapes.ttl
 # unset or set to "" to disable shapes download
 ENV SHAPES_URL='https://github.com/sdsc-ordes/imaging-plaza-ontology/releases/download/v0.8/ImagingOntologyCombined.ttl.gz'
 ENV PATH="${PATH}:/home/appuser/.local/bin"
@@ -33,7 +31,7 @@ RUN groupadd --gid 1000 appuser \
     && useradd --uid 1000 --gid 1000 -m appuser
 
 USER appuser
-WORKDIR /shacl
+WORKDIR /shacl-api
 COPY . .
 COPY ./tools/docker/entrypoint.sh /entrypoint.sh
 
