@@ -4,7 +4,6 @@ build-backend = "hatchling.build"
 
 [project]
 name = "shacl-api"
-version = "0.1.0"
 authors = [
   { name="Swiss Data Science Center", email="contact@datascience.ch" },
 ]
@@ -17,6 +16,7 @@ classifiers = [
 ]
 license = "AGPL-3.0"
 license-files = ["LICEN[CS]E*"]
+dynamic = ["version"]
 
 dependencies = [
   "fastapi",
@@ -43,3 +43,7 @@ webapp = [
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/shacl-api"]
+
+[tool.hatch.version]
+path = "src/shacl-api/__init__.py"
+pattern = '__version__ = "(?P<version>[^"]+)"'
