@@ -10,4 +10,5 @@ services:
       - "8001:15400"
       - "8501:8501"
     volumes:
-      - ../../src:/shacl/src
+      - ../../src:/shacl-api/src
+    working_dir: /shacl-api
