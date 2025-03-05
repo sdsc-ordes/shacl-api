@@ -1,4 +1,5 @@
-VERSION = latest
+# grep version from __init__.py
+VERSION := $(shell grep __version__ src/shacl-api/__init__.py | cut -d '"' -f 2)
 IMAGE = ghcr.io/sdsc-ordes/shacl-api
 CONTAINER_RUNTIME ?= docker
 
