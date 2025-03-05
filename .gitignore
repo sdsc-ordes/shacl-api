@@ -1,5 +1,5 @@
 .DS_Store
-ci/*.log
+ci/*.lo
 ci/*.txt
 
 # Byte-compiled / optimized / DLL files
@@ -124,7 +124,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
+.env*
 .venv
 env/
 venv/
