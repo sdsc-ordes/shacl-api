@@ -18,9 +18,9 @@ The docker images can be run as follows:
 
 ```
 # Only REST API
-docker run -it --rm -p 8000:15400 --env-file .env -v $(pwd)/app:/app ghcr.io/sdsc-ordes/shacl-api:latest 
+docker run -it --rm -p 8000:15400 --env-file .env ghcr.io/sdsc-ordes/shacl-api:latest 
 # REST API + web server
-docker run -it --rm -p 8000:15400 -p 8501:8501 --env-file .env -v $(pwd)/app:/app ghcr.io/sdsc-ordes/shacl-api:latest-webapp
+docker run -it --rm -p 8000:15400 -p 8501:8501 --env-file .env ghcr.io/sdsc-ordes/shacl-api:latest-webapp
 ```
 
 
