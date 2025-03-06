@@ -1,6 +1,6 @@
 data/*
 .DS_Store
-ci/*.lo
+ci/*.log
 ci/*.txt
 
 # Byte-compiled / optimized / DLL files
