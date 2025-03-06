@@ -13,7 +13,8 @@ LABEL org.opencontainers.image.description="API for validating RDF data against 
 LABEL org.opencontainers.image.version=${VERSION}
 
 # unset or set to "" to disable shapes download
-ENV SHAPES_URL='https://github.com/sdsc-ordes/imaging-plaza-ontology/releases/download/v0.8/ImagingOntologyCombined.ttl.gz'
+ENV SHAPES_URL="https://github.com/sdsc-ordes/imaging-plaza-ontology/releases/download/v0.8/ImagingOntologyCombined.ttl.gz"
+ENV SHAPES_PATH="/data/shapes.ttl"
 ENV PATH="${PATH}:/home/appuser/.local/bin"
 
 RUN apk update && apk add \
@@ -30,9 +31,11 @@ RUN apk update && apk add \
 RUN groupadd --gid 1000 appuser \
     && useradd --uid 1000 --gid 1000 -m appuser
 
+RUN mkdir -p $(dirname ${SHAPES_PATH}) && chown -R appuser:appuser $(dirname ${SHAPES_PATH})
 USER appuser
 WORKDIR /shacl-api
 COPY . .
+# give permissions on /shacl-api/data to appuser
 COPY ./tools/docker/entrypoint.sh /entrypoint.sh
 
 ENV PYTHONUNBUFFERED=1

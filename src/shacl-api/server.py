@@ -9,7 +9,7 @@ from rdflib.namespace import Namespace
 import json
 
 app = FastAPI()
-SHAPES_PATH = "data/shapes.ttl"
+SHAPES_PATH = os.getenv("SHAPES_PATH", "data/shapes.ttl")
 
 
 @app.get("/")

@@ -3,17 +3,18 @@
 set -e
 
 extract_file() {
-    ARCHIVE="$1"
-    OUTPUT="$2"
+    EXT="$1"
+    ARCHIVE="$2"
+    OUTPUT="$3"
 
-    case "$ARCHIVE" in
-        *.gz)
+    case "$EXT" in
+        gz)
             gzip -dc "$ARCHIVE" > "$OUTPUT"
             ;;
-        *.zip)
+        zip)
             unzip -p "$ARCHIVE" > "$OUTPUT"
             ;;
-        *.tar.gz|*.tgz)
+        tgz)
             tar -xzOf "$ARCHIVE" > "$OUTPUT"
             ;;
         *)
@@ -23,16 +24,15 @@ extract_file() {
 }
 
 # Download and extract shapes
-if [ -z "$SHAPES_URL" ]; then
-  mkdir -p "$(dirname "$SHAPES_PATH")"
+if ! [ -z "$SHAPES_URL" ]; then
   TMP_FILE=$(mktemp)
   curl -fsSL "$SHAPES_URL" -o "$TMP_FILE"
-  extract_file "$TMP_FILE" "data/shapes.ttl"
+  extract_file "${SHAPES_URL##*.}" "$TMP_FILE" "${SHAPES_PATH}"
 fi
 
 # Start webapp if enabled
 if [ "$1" == "webapp" ]; then
-    nohup streamlit run /shacl/src/shacl-api/webapp.py --server.port 8501 &
+    nohup streamlit run /shacl-api/src/shacl-api/webapp.py --server.port 8501 &
 fi
 
 # Start API server
