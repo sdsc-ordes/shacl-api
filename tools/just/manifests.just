@@ -4,8 +4,6 @@ root_dir := `git rev-parse --show-toplevel`
 deploy_dir := root_dir + "/tools/deploy"
 set positional-arguments
 set shell := ["bash", "-cue"]
-export YTT_tokens__github := env('GITHUB_TOKEN')
-export YTT_tokens__gitlab := env('GITLAB_TOKEN')
 
 # Default recipe to list all recipes.
 [private]
@@ -16,7 +14,6 @@ default:
 render: 
   cd "{{deploy_dir}}" && \
     ytt \
-      --data-values-env YTT \
       -f common.lib.star \
       -f k8s/ \
       -f schema.yaml
