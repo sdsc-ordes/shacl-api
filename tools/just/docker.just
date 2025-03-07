@@ -3,8 +3,8 @@ set positional-arguments
 set shell := ["bash", "-cue"]
 root_dir := `git rev-parse --show-toplevel`
 ctr := "docker"
-tag := "latest"
-image := "ghcr.io/sdsc-ordes/gimie-api:" + tag
+version := `git describe --tags --abbrev=0`
+image := "ghcr.io/sdsc-ordes/gimie-api:" + version
 image_dir := root_dir + "/tools/image"
 
 # Default recipe to list all recipes.
@@ -40,7 +40,7 @@ run *args: build
 push *args: build
   @echo "🐋 Pushing docker image"
   cd {{root_dir}} && \
-    {{ctr}} push {{args}} {{image}}
+    {{ctr}} push {{args}} {{image}} && \
     {{ctr}} push {{args}} {{image}}-webapp
 
 # Start the Docker Compose stack

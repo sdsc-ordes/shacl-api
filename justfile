@@ -18,11 +18,11 @@ install:
 
 # Lint python code
 lint: install
-	ruff check src
+  ruff check src
 
 # Run unit tests
 test: install 
-	pytest
+  pytest
 
 alias dev := nix-develop
 # Enter a Nix development shell.
