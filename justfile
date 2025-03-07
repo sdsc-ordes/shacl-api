@@ -14,15 +14,15 @@ default:
 
 # Setup project for development
 install: 
-  pip install -e '.[webapp,test,dev]'
+  uv pip install -e '.[webapp,test,dev]'
 
 # Lint python code
 lint: install
-  ruff check src
+  uv run ruff check src
 
 # Run unit tests
 test: install 
-  pytest
+  uv run pytest
 
 alias dev := nix-develop
 # Enter a Nix development shell.
