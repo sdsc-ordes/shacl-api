@@ -5,13 +5,30 @@ Based on https://github.com/SDSC-ORD/shacl
 
 ## How to use it?
 
+### Setup
+
+This repository contains a [justfile](./justfile), and we use [`just`](https://github.com/casey/just) as a command runner.
+
+We provide all the tools you need to work on this project in a nix development shell.
+See here to install nix: https://determinate.systems/nix-installer/
+
+To enter the dev-shell, run:
+
+```shell
+just dev
+```
+
+> [!NOTE]
+> Alternatively, you may enter the devshell directly with :
+> `nix develop ./tools/nix#default --accept-flake-config --command "zsh"`
+
 
 ### With docker
 
-We provide a helper make recipe to build two docker images, a small "headless" version with only the REST server, and a larger image that bundles the REST server and a streamlit web application. These two images are differentiated by their tag: `<version>` vs `<version>-webapp`.
+We build two docker images, a small "headless" version with only the REST server, and a larger image that bundles the REST server and a streamlit web application. These two images are differentiated by their tag: `<version>` vs `<version>-webapp`.
 
-```
-make docker-build
+```shell
+just docker build
 ```
 
 The docker images can be run as follows:
@@ -19,15 +36,32 @@ The docker images can be run as follows:
 ```
 # Only REST API
 docker run -it --rm -p 8000:15400 --env-file .env ghcr.io/sdsc-ordes/shacl-api:latest 
+
 # REST API + web server
 docker run -it --rm -p 8000:15400 -p 8501:8501 --env-file .env ghcr.io/sdsc-ordes/shacl-api:latest-webapp
+# or
+just docker run
 ```
 
-
-## With docker compose
+### With docker compose
 
 For development, it may be more convenient to use our docker compose stack.
 
 ```
-make docker-compose-up
+just docker compose-up
+```
+
+## Deployment
+
+We provide manifests to deploy the service on kubernetes.
+The manifest templates in [tools/deploy](tools/deploy) are managed with ytt and can be rendered using:
+
+```shell
+just manifests render
+```
+
+Or deployed directly with:
+
+```shell
+just manifests deploy
 ```
