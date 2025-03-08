@@ -1,6 +1,5 @@
-ARG VERSION=latest
-
 FROM ghcr.io/ashleycaselli/shacl:1.4.3_89205df AS base
+ARG VERSION=latest
 
 ### API-only build-stage ###
 FROM base AS api
@@ -34,9 +33,10 @@ RUN groupadd --gid 1000 appuser \
 RUN mkdir -p $(dirname ${SHAPES_PATH}) && chown -R appuser:appuser $(dirname ${SHAPES_PATH})
 USER appuser
 WORKDIR /shacl-api
-COPY . .
+ADD LICENSE README.md CHANGELOG pyproject.toml uv.lock .
+ADD src ./src
 # give permissions on /shacl-api/data to appuser
-COPY ./tools/docker/entrypoint.sh /entrypoint.sh
+COPY ./tools/image/entrypoint.sh /entrypoint.sh
 
 ENV PYTHONUNBUFFERED=1
 RUN pip3 install --break-system-packages -e . 
@@ -48,7 +48,7 @@ ENTRYPOINT ["bash", "/entrypoint.sh", "api"]
 ### API + Webapp build-stage ###
 FROM api AS webapp
 
-LABEL org.opencontainers.image.version ${VERSION}-webapp
+LABEL org.opencontainers.image.version=${VERSION}-webapp
 
 USER root
 RUN apk update && apk add \
