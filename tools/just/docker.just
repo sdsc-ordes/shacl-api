@@ -24,17 +24,18 @@ _build *args:
 # Build Docker images
 build *args:
   @echo "🐋 Building docker image"
-  just _build {{args}} --target=api -t {{image}}
-  just _build {{args}} --target=webapp -t {{image}}-webapp
+  just docker _build {{args}} --target=api -t {{image}}
+  just docker _build {{args}} --target=webapp -t {{image}}-webapp
 
 # Run docker image
 run *args: build
   cd {{root_dir}} && \
     {{ctr}} run \
       --env-file .env \
-      -p 7123:15400 \
+      -p 8000:15400 \
+      -p 8501:8501 \
       {{args}} \
-      {{image}}
+      {{image}}-webapp
 
 # Push Docker images
 push *args: build
