@@ -1,6 +1,7 @@
 # kubernetes Manifests
 
 Manifests in this directory are templated with ytt.
+The commands used to render and deploy these manifests are in [`manifests.just`](tools/just/manifests.just) and can be run using `just manifests`.
 
 ## How to use
 
