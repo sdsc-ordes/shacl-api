@@ -9,5 +9,5 @@ image: "ghcr.io/sdsc-ordes/shacl-api:latest"
 namespace: "shacl"
 replicas: 1
 shapes:
-  path: "/shacl/data/shapes.ttl"
+  path: "/data/shapes.ttl"
   url: 'https://github.com/sdsc-ordes/imaging-plaza-ontology/releases/download/v0.8/ImagingOntologyCombined.ttl.gz'
