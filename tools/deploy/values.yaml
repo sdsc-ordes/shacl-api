@@ -1,4 +1,0 @@
-image: "ghcr.io/sdsc-ordes/shacl-api:latest"
-config:
-  SHAPES_PATH: "/shacl/data/shapes.ttl"
-  SHAPES_URL: 'https://github.com/sdsc-ordes/imaging-plaza-ontology/releases/download/v0.8/ImagingOntologyCombined.ttl.gz'

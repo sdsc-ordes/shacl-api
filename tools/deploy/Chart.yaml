@@ -1,9 +1,0 @@
-name: shacl-api
-description: Helm chart for the shacl-api web service based on the TopBraid SHACL validator.
-version: 0.0.2
-apiVersion: v1
-keywords:
-  - rdf
-  - validation
-  - shacl
-home: https://github.com/sdsc-ordes/shacl-api
