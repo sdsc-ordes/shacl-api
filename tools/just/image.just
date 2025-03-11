@@ -10,7 +10,7 @@ image_dir := root_dir + "/tools/image"
 # Default recipe to list all recipes.
 [private]
 default:
-  just --list docker --no-aliases
+  just --list image --no-aliases
 
 _build *args:
   cd {{root_dir}} && \
@@ -24,8 +24,8 @@ _build *args:
 # Build Docker images
 build *args:
   @echo "🐋 Building docker image"
-  just docker _build {{args}} --target=api -t {{image}}
-  just docker _build {{args}} --target=webapp -t {{image}}-webapp
+  just image _build {{args}} --target=api -t {{image}}
+  just image _build {{args}} --target=webapp -t {{image}}-webapp
 
 # Run docker image
 run *args: build
