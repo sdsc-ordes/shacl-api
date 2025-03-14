@@ -1,25 +1,31 @@
+import os
 import streamlit as st
-import requests 
+import requests
 import base64
-# This interface is for uploading the files and getting the files back 
+
+# This interface is for uploading the files and getting the files back
+API_PORT = 15400
 
 st.set_page_config(layout="wide")
 
-st.image("https://datascience.ch/wp-content/uploads/2020/09/logo-SDSC-transparent.png", width=200)
+st.image(
+    "https://datascience.ch/wp-content/uploads/2020/09/logo-SDSC-transparent.png",
+    width=200,
+)
 st.title("shaclAPI")
 
-cola, colb, colc, _,_,_,_ = st.columns(7)
+cola, colb, colc, _, _, _, _ = st.columns(7)
 
 with cola:
     st.write("Validation and Inference")
 
 with colb:
-    option = st.radio("Which analysis would you like to do?",
-        ("Validation", "Inference"))
-    
+    option = st.radio(
+        "Which analysis would you like to do?", ("Validation", "Inference")
+    )
+
 with colc:
-    port = st.radio("Which port is the API using?",
-            ("15400", "8000"))
+    port = st.radio("Which port is the API using?", (f"{API_PORT}", "8000"))
 
 
 st.markdown("""---""")
@@ -48,9 +54,8 @@ with col3:
     st.markdown("## SHACL Output")
     calculate = st.button("Calculate")
 
-    if calculate:     
-        payload = {"datafile": datafile64,
-                "shapesfile": shapesfile64}
+    if calculate:
+        payload = {"datafile": datafile64, "shapesfile": shapesfile64}
 
         if option == "Validation":
             url = f"http://127.0.0.1:{port}/validate"
@@ -60,9 +65,9 @@ with col3:
         r = requests.post(url, data=payload)
         output = r.json()["output"]
         with st.expander("See Output"):
-            st.code(output) #line_numbers
+            st.code(output)  # line_numbers
 
-        st.download_button('Download TTL', output, file_name='output.ttl')
+        st.download_button("Download TTL", output, file_name="output.ttl")
 
 
 st.markdown("""---""")
@@ -72,7 +77,8 @@ col4, col5 = st.columns(2)
 with col4:
     st.markdown("## How to use the API in python?")
     with st.expander("See Code"):
-        st.code("""
+        st.code(
+            """
         import requests 
         import base64
         with open('../tests/tests-files/val_imagingID.ttl', 'rb') as file:
@@ -92,15 +98,20 @@ with col4:
 
         output = r.json()["output"]
             
-        """, language="python")
+        """,
+            language="python",
+        )
 
 with col5:
     st.markdown("## How to use the API in javascript?")
     with st.expander("See Code"):
-        st.code("""
+        st.code(
+            """
         SOON
             
-        """, language="javascript")
+        """,
+            language="javascript",
+        )
 
 st.markdown("""---""")
 st.markdown("Developed with <3 by ORDES SDSC Team.")
