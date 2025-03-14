@@ -12,7 +12,7 @@ LABEL org.opencontainers.image.description="API for validating RDF data against 
 LABEL org.opencontainers.image.version=${VERSION}
 
 # unset or set to "" to disable shapes download
-ENV SHAPES_URL="https://github.com/sdsc-ordes/imaging-plaza-ontology/releases/download/v0.8/ImagingOntologyCombined.ttl.gz"
+ENV SHAPES_URL=""
 ENV SHAPES_PATH="/data/shapes.ttl"
 ENV PATH="${PATH}:/home/appuser/.local/bin"
 
