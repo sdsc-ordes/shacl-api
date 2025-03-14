@@ -4,7 +4,7 @@ set shell := ["bash", "-cue"]
 root_dir := `git rev-parse --show-toplevel`
 ctr := "docker"
 version := `git describe --tags --abbrev=0`
-image := "ghcr.io/sdsc-ordes/gimie-api:" + version
+image := "ghcr.io/sdsc-ordes/shacl-api:" + version
 image_dir := root_dir + "/tools/image"
 
 # Default recipe to list all recipes.
@@ -31,6 +31,8 @@ build *args:
 run *args: build
   cd {{root_dir}} && \
     {{ctr}} run \
+      -it \
+      --rm \
       --env-file .env \
       -p 8000:15400 \
       -p 8501:8501 \
