@@ -1,12 +1,13 @@
-from fastapi import FastAPI, Request, Form
-import subprocess
-import os
 import base64
+import json
+import os
+import subprocess
+from typing import Annotated, Optional
 
+from fastapi import FastAPI, File, Header, Request, UploadFile
 from rdflib import Graph
 from rdflib.namespace import Namespace
 
-import json
 
 app = FastAPI()
 SHAPES_PATH = os.getenv("SHAPES_PATH", "data/shapes.ttl")
@@ -138,16 +139,14 @@ async def inferenceJsonLD(
 
 
 @app.post("/validate")
-def validate(datafile: str = Form(...), shapesfile: str = Form(...)):
-    datafile = base64.b64decode(str.encode(datafile))
-    shapesfile = base64.b64decode(str.encode(shapesfile))
+def validate(
+    data: Annotated[UploadFile, File()],
+    shapes: Annotated[Optional[UploadFile], File()] = None,
+    content_type: Annotated[Optional[str], Header()] = "application/json",
+    accept: Annotated[Optional[str], Header()] = "application/json",
+):
 
-    # TODO: use tempfile package
-    with open("datafile.ttl", "wb") as f:
-        f.write(datafile)
-
-    with open("shapesfile.ttl", "wb") as f:
-        f.write(shapesfile)
+    print(data)
 
     output = subprocess.run(
         [
@@ -169,17 +168,12 @@ def validate(datafile: str = Form(...), shapesfile: str = Form(...)):
 
 
 @app.post("/inference")
-def inference(datafile: str = Form(...), shapesfile: str = Form(...)):
-    datafile = base64.b64decode(str.encode(datafile))
-    shapesfile = base64.b64decode(str.encode(shapesfile))
-    print(datafile)
-
-    # TODO: use tempfile package
-    with open("datafile.ttl", "wb") as f:
-        f.write(datafile)
-
-    with open("shapesfile.ttl", "wb") as f:
-        f.write(shapesfile)
+def inference(
+    data: Annotated[UploadFile, File()],
+    shapes: Annotated[Optional[UploadFile], File()] = None,
+    content_type: Annotated[Optional[str], Header()] = "application/json",
+    accept: Annotated[Optional[str], Header()] = "application/json",
+):
 
     output = subprocess.run(
         ["shaclinfer.sh", "-datafile", "datafile.ttl", "-shapesfile", "shapesfile.ttl"],
