@@ -117,12 +117,11 @@ def validate(
 
     output = subprocess.run(
         [
-            #"shaclvalidate.sh",
-            #"-datafile",
-            "cat",
+            "shaclvalidate.sh",
+            "-datafile",
             data_file.name,
-            #"-shapesfile",
-            #shapes_file.name,
+            "-shapesfile",
+            shapes_file.name,
         ],
         stdout=subprocess.PIPE,
     )
