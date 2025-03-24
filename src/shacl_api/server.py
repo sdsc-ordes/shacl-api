@@ -1,10 +1,12 @@
 import base64
-import json
+from enum import Enum
 import os
 import subprocess
-from typing import Annotated, Optional
+import tempfile
+from typing import Annotated, BinaryIO, IO, Optional, Union
 
-from fastapi import FastAPI, File, Header, Request, UploadFile
+from fastapi import FastAPI, File, Header, Request, Response, UploadFile
+from pydantic import BaseModel
 from rdflib import Graph
 from rdflib.namespace import Namespace
 
@@ -19,160 +21,104 @@ def index():
         "title": "Hello, welcome to the SHACL API v0.0.5. Compatible with Ontology v0.8."
     }
 
+class RdfMimeType(str, Enum):
+    """MIME types for supported RDF serialization formats."""
+    jsonld = "application/ld+json"
+    json = "application/json"
+    turtle = "text/turtle"
+    ntriples = "application/n-triples"
+    rdfxml = "application/rdf+xml"
+    
+    def to_rdflib(self):
+        match self:
+            case RdfMimeType.jsonld:
+                return "json-ld"
+            case RdfMimeType.json:
+                return "json-ld"
+            case RdfMimeType.turtle:
+                return "turtle"
+            case RdfMimeType.ntriples:
+                return "ntriples"
+            case RdfMimeType.rdfxml:
+                return "xml"
 
-@app.post("/validate-jsonld")
-async def validateJsonLD(
-    item: Request,
-    jsonInput: bool | None = None,
-    jsonOutput: bool | None = None,
-    verbose: bool | None = None,
-):
-    data = await item.json()
-    data = data["data"]
-    if verbose:
-        print(data)
+class FormatHeaders(BaseModel):
+    """Common headers for RDF formats."""
+    accept: RdfMimeType = RdfMimeType.jsonld
 
-    if jsonInput:
-        if verbose:
-            print("Assuming json")
-            print(f"Type: {type(data)}")
-            print("Cleaning newlines")
-        data = json.dumps(data)
+def convert_rdf_file(file: IO[bytes], from_format: str, to_format="turtle") -> IO[bytes]:
+    """Convert RDF data to Turtle format if not already in Turtle."""
+    tmp = tempfile.NamedTemporaryFile(delete=False, delete_on_close=False)
+    if from_format == to_format:
+        tmp.write(file.read())
     else:
-        if verbose:
-            print("Assuming string")
-            print(f"Type: {type(data)}")
-            print("Cleaning newlines")
-        data = data.splitlines()
-        data = " ".join(data)
+        g = Graph()
+        g.parse(file, format=from_format)
+        tmp.write(g.serialize(format=to_format).encode())
+    tmp.close()
+    return tmp
 
-    # This is generating the datafile necesary to run inference.
-    graph = Graph()
-    graph.parse(data=data, format="json-ld")
-
-    SCHEMA = Namespace("http://schema.org/")
-    graph.namespace_manager.bind("schema", SCHEMA, override=True, replace=True)
-    ttl_input = str(graph.serialize(destination="datafile.ttl", format="turtle"))
-
-    output = subprocess.run(
-        ["shaclvalidate.sh", "-datafile", "datafile.ttl", "-shapesfile", SHAPES_PATH],
-        stdout=subprocess.PIPE,
-    )
-
-    os.remove("datafile.ttl")
-
-    ### Read and provide JSON-LD
-    graph = Graph()
-    graph.parse(data=output.stdout, format="turtle")
-    SCHEMA = Namespace("http://schema.org/")
-    graph.namespace_manager.bind("schema", SCHEMA, override=True, replace=True)
-    jsonld = str(graph.serialize(format="json-ld"))
-
-    if jsonOutput:
-        jsonld = json.loads(jsonld)
-
-    return {
-        "jsonldOutput": jsonld,
-        "ttlOutput": output.stdout,
-        "jsonldInput": data,
-        "ttlInput": ttl_input,
-    }
-
-
-@app.post("/inference-jsonld")
-async def inferenceJsonLD(
-    item: Request,
-    jsonInput: bool | None = None,
-    jsonOutput: bool | None = None,
-    verbose: bool | None = None,
-):
-    data = await item.json()
-    data = data["data"]
-    if verbose:
-        print(data)
-
-    if jsonInput:
-        if verbose:
-            print("Assuming json")
-            print(f"Type: {type(data)}")
-            print("Cleaning newlines")
-        data = json.dumps(data)
-    else:
-        if verbose:
-            print("Assuming string")
-            print(f"Type: {type(data)}")
-            print("Cleaning newlines")
-        data = data.splitlines()
-        data = " ".join(data)
-
-    # This is generating the datafile necesary to run inference.
-    graph = Graph()
-    graph.parse(data=data, format="json-ld")
-
-    SCHEMA = Namespace("http://schema.org/")
-    graph.namespace_manager.bind("schema", SCHEMA, override=True, replace=True)
-    ttl_input = str(graph.serialize(destination="datafile.ttl", format="turtle"))
-
-    output = subprocess.run(
-        ["shaclinfer.sh", "-datafile", "datafile.ttl", "-shapesfile", "SHAPES_PATH"],
-        stdout=subprocess.PIPE,
-    )
-
-    os.remove("datafile.ttl")
-
-    ### Read and provide JSON-LD
-    graph = Graph()
-    graph.parse(data=output.stdout, format="turtle")
-    SCHEMA = Namespace("http://schema.org/")
-    graph.namespace_manager.bind("schema", SCHEMA, override=True, replace=True)
-    jsonld = str(graph.serialize(format="json-ld"))
-
-    if jsonOutput:
-        jsonld = json.loads(jsonld)
-
-    return {
-        "jsonldOutput": jsonld,
-        "ttlOutput": output.stdout,
-        "jsonldInput": data,
-        "ttlInput": ttl_input,
-    }
-
-
-@app.post("/validate")
+@app.post("/validate", )
 def validate(
-    data: Annotated[UploadFile, File()],
-    shapes: Annotated[Optional[UploadFile], File()] = None,
-    content_type: Annotated[Optional[str], Header()] = "application/json",
-    accept: Annotated[Optional[str], Header()] = "application/json",
+    data: Annotated[
+        UploadFile,
+        File(description="RDF file with instance data to validate.")
+    ],
+    shapes: Annotated[
+        Union[UploadFile, str, None],
+        File(description="SHACL shapes file, by default None.")
+    ] = None,
+    headers: Annotated[
+        FormatHeaders,
+        Header(description="Request headers for RDF format")] = FormatHeaders(),
 ):
+    """Validate RDF instance data against SHACL shapes. If shapes are omitted, the default shapes file from the server is used. Supported file formats are rdf-xml, turtle, json-ld and ntriples."""
 
-    print(data)
+    if shapes is None or isinstance(shapes, str):
+        shapes_file = open(SHAPES_PATH, 'rb')
+    else:
+        shapes_file = convert_rdf_file(
+            shapes.file,
+            from_format=RdfMimeType(shapes.content_type).to_rdflib()
+        )
+    data_file = convert_rdf_file(
+        data.file,
+        from_format=RdfMimeType(data.content_type).to_rdflib()
+    )
 
     output = subprocess.run(
         [
-            "shaclvalidate.sh",
-            "-datafile",
-            "datafile.ttl",
-            "-shapesfile",
-            "shapesfile.ttl",
+            #"shaclvalidate.sh",
+            #"-datafile",
+            "cat",
+            data_file.name,
+            #"-shapesfile",
+            #shapes_file.name,
         ],
         stdout=subprocess.PIPE,
     )
 
-    os.remove("datafile.ttl")
-    os.remove("shapesfile.ttl")
-    with open("validationTest.ttl", "wb") as f:
-        f.write(output.stdout)
+    if isinstance(shapes, UploadFile) and shapes_file.name != SHAPES_PATH:
+        os.unlink(shapes_file.name)
+    os.unlink(data_file.name)
 
-    return {"output": output.stdout}
+    if headers.accept == RdfMimeType.turtle:
+        report = output.stdout
+    else:
+        report = (
+            Graph()
+            .parse(data=output.stdout, format="turtle")
+            .serialize(format=RdfMimeType(headers.accept).to_rdflib())
+        )
+
+    return Response(content=report, media_type=headers.accept)
 
 
 @app.post("/inference")
 def inference(
     data: Annotated[UploadFile, File()],
     shapes: Annotated[Optional[UploadFile], File()] = None,
-    content_type: Annotated[Optional[str], Header()] = "application/json",
-    accept: Annotated[Optional[str], Header()] = "application/json",
+    headers: Annotated[FormatHeaders, Header()] = FormatHeaders(),
 ):
 
     output = subprocess.run(
