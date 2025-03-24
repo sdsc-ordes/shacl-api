@@ -10,8 +10,37 @@ from pydantic import BaseModel
 from rdflib import Graph
 from rdflib.namespace import Namespace
 
+from . import __version__
 
-app = FastAPI()
+description = """
+
+## Context
+
+REST API wrapping [TOPBraid's SHACL validation tool](http://github.com/topquadrant/shacl) to allow remote validation of instance data.
+
+## Usage
+
+The API allows SHACL validation and inference via dedicated endpoints. If you do not provide your custom shapes, the server will use its configured default shapes.
+
+You can control RDF serialization formats through appropriate http headers.
+
+"""
+
+app = FastAPI(
+    title="shacl-api",
+    description=description,
+    summary="Validate RDF files against SHACL shapes.",
+    version=__version__,
+    contact={
+        "name": "Swiss Data Science Center",
+        "url": "https://datascience.ch",
+        "email": "contact@datascience.ch",
+    },
+    license_info={
+        "name": "AGPL-3.0",
+        "identifier": "AGPL-3.0-or-later",
+    },
+)
 SHAPES_PATH = os.getenv("SHAPES_PATH", "data/shapes.ttl")
 
 
@@ -66,7 +95,7 @@ def validate(
     ],
     shapes: Annotated[
         Union[UploadFile, str, None],
-        File(description="SHACL shapes file, by default None.")
+        File(description="SHACL shapes file. Default: None.")
     ] = None,
     headers: Annotated[
         FormatHeaders,
