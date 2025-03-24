@@ -7,16 +7,10 @@ client = TestClient(app)
 
 def test_validate_bad_data():
     response = client.post(
-        "/items/",
-        headers={"X-Token": "coneofsilence"},
-        json={"id": "foobar", "title": "Foo Bar", "description": "The Foo Barters"},
+        "/validate/",
+        files={"shapes": "shapes.ttl", "data": "data.ttl"},
     )
     assert response.status_code == 200
-    assert response.json() == {
-        "id": "foobar",
-        "title": "Foo Bar",
-        "description": "The Foo Barters",
-    }
 
 def test_validate_good_data():
     ...
