@@ -24,6 +24,14 @@ lint: install
 test: install 
   uv run pytest
 
+# Run the API server
+serve *args: install
+  uv run python -m uvicorn src.shacl_api.server:app --host 0.0.0.0 --port 15400 {{args}}
+
+# Serve and reload on file changes
+watch: 
+  just serve --reload
+
 alias dev := nix-develop
 # Enter a Nix development shell.
 nix-develop *args:
