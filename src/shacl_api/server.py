@@ -1,15 +1,14 @@
-import base64
 from enum import Enum
 import os
+import shutil
 import subprocess
 import tempfile
-from typing import Annotated, BinaryIO, IO, Optional, Union
+from typing import Annotated, IO, Optional, Union
 
-from fastapi import FastAPI, File, Header, Request, Response, UploadFile
+from fastapi import FastAPI, File, Header, UploadFile
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from rdflib import Graph
-from rdflib.namespace import Namespace
 
 from . import __version__
 
@@ -21,7 +20,8 @@ REST API wrapping [TOPBraid's SHACL validation tool](http://github.com/topquadra
 
 ## Usage
 
-The API allows SHACL validation and inference via dedicated endpoints. If you do not provide your custom shapes, the server will use its configured default shapes.
+The API allows SHACL validation and inference via dedicated endpoints.
+If you do not provide your custom shapes, the server will use its configured default shapes.
 
 You can control RDF serialization formats through appropriate http headers.
 
@@ -77,34 +77,38 @@ class FormatHeaders(BaseModel):
     """Common headers for RDF formats."""
     accept: RdfMimeType = RdfMimeType.jsonld
 
-def convert_rdf_file(file: IO[bytes], from_format: str, to_format="turtle") -> IO[bytes]:
+def convert_rdf_file(
+    in_file: IO[bytes],
+    to_file: IO[bytes],
+    in_format: str="turtle",
+    to_format: str="turtle",
+):
     """Convert RDF data to Turtle format if not already in Turtle."""
-    tmp = tempfile.NamedTemporaryFile(delete=False, delete_on_close=False)
-    if from_format == to_format:
-        tmp.write(file.read())
+    if in_format == to_format:
+        # NOTE: may want to symlink instead to remove overhead
+        shutil.copyfileobj(in_file, to_file)
     else:
+        # WARN: This loads the file in memory
         g = Graph()
-        g.parse(file, format=from_format)
-        tmp.write(g.serialize(format=to_format).encode())
-    tmp.close()
-    return tmp
+        g.parse(in_file, format=in_format)
+        to_file.write(g.serialize(format=to_format).encode())
+    to_file.seek(0)
 
 class ShaclCommand(str, Enum):
     """Supported SHACL commands."""
     validate = "shaclvalidate.sh"
     infer = "shaclinfer.sh"
 
-def run_shacl(mode: ShaclCommand, data: IO[bytes], shapes: IO[bytes]) -> IO[bytes]:
+def run_shacl(mode: ShaclCommand, data_path: str, shapes_path: str) -> IO[bytes]:
     report_file = tempfile.NamedTemporaryFile(delete=False, delete_on_close=False)
     _ = subprocess.run(
-        [mode.value, "-datafile", data.name, "-shapesfile", shapes.name],
+        [mode.value, "-datafile", data_path, "-shapesfile", shapes_path],
         stdout=report_file,
     )
+    report_file.seek(0)
     
     return report_file
 
-
-    
 
 @app.post("/validate", )
 def validate(
@@ -120,39 +124,48 @@ def validate(
         FormatHeaders,
         Header(description="Request headers for RDF format")] = FormatHeaders(),
 ):
-    """Validate RDF instance data against SHACL shapes. If shapes are omitted, the default shapes file from the server is used. Supported file formats are rdf-xml, turtle, json-ld and ntriples."""
+    """Validate RDF instance data against SHACL shapes.
+    If shapes are omitted, the default shapes file from the server is used.
+    Supported file formats are rdf-xml, turtle, json-ld and ntriples.
+    """
 
-    # Convert input data to turtle format
     if shapes is None or isinstance(shapes, str):
-        shapes_file = open(SHAPES_PATH, 'rb')
+        shapes_source = open(SHAPES_PATH, 'rb')
+        shapes_format = "turtle"
     else:
-        shapes_file = convert_rdf_file(
-            shapes.file,
-            from_format=RdfMimeType(shapes.content_type).to_rdflib()
-        )
-    data_file = convert_rdf_file(
-        data.file,
-        from_format=RdfMimeType(data.content_type).to_rdflib()
-    )
+        shapes_source = shapes.file
+        shapes_format = RdfMimeType(shapes.content_type).to_rdflib()
 
-    # Run validation
-    report_file = run_shacl(ShaclCommand.validate, data_file, shapes_file)
+    # Convert inputs to turtle format
+    with (
+        tempfile.NamedTemporaryFile() as data_ttl,
+        tempfile.NamedTemporaryFile() as shapes_ttl,
+    ):
+        convert_rdf_file(
+            in_file=shapes_source,
+            to_file=shapes_ttl,
+            in_format=shapes_format,
+        )
+        convert_rdf_file(
+            in_file=data.file,
+            in_format=RdfMimeType(data.content_type).to_rdflib(),
+            to_file=data_ttl,
+        )
+
+        # Run validation
+        report_ttl = run_shacl(ShaclCommand.validate, data_ttl.name, shapes_ttl.name)
 
     # Convert report to requested format
-    output_file = convert_rdf_file(
-        report_file,
-        from_format="turtle",
+    report_file = tempfile.NamedTemporaryFile(delete=False, delete_on_close=False)
+    convert_rdf_file(
+        in_file=report_ttl,
+        to_file=report_file,
         to_format=RdfMimeType(headers.accept).to_rdflib()
     )
+    os.remove(report_ttl.name)
 
-    try:
-        return FileResponse(output_file.name, media_type=headers.accept)
-    finally:
-        # Cleanup temporary files
-        if isinstance(shapes, UploadFile) and shapes_file.name != SHAPES_PATH:
-            os.unlink(shapes_file.name)
-        for tmp in (data_file, report_file, output_file):
-            os.unlink(tmp.name)
+    # NOTE: FastAPI automatically deletes the response file
+    return FileResponse(report_file.name, media_type=headers.accept)
 
 @app.post("/infer", )
 def infer(
