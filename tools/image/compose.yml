@@ -3,6 +3,9 @@ services:
     build:
       dockerfile: ./tools/image/Dockerfile
       target: webapp
+    environment:
+      - SHAPES_PATH=${SHAPES_PATH}
+      - SHAPES_URL=${SHAPES_URL}
     ports:
       - "8001:15400"
       - "8501:8501"
