@@ -6,6 +6,7 @@ import tempfile
 from typing import Annotated, BinaryIO, IO, Optional, Union
 
 from fastapi import FastAPI, File, Header, Request, Response, UploadFile
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from rdflib import Graph
 from rdflib.namespace import Namespace
@@ -59,6 +60,7 @@ class RdfMimeType(str, Enum):
     rdfxml = "application/rdf+xml"
     
     def to_rdflib(self):
+        """Translates mimetypes to rdflib format names."""
         match self:
             case RdfMimeType.jsonld:
                 return "json-ld"
@@ -87,6 +89,23 @@ def convert_rdf_file(file: IO[bytes], from_format: str, to_format="turtle") -> I
     tmp.close()
     return tmp
 
+class ShaclCommand(str, Enum):
+    """Supported SHACL commands."""
+    validate = "shaclvalidate.sh"
+    infer = "shaclinfer.sh"
+
+def run_shacl(mode: ShaclCommand, data: IO[bytes], shapes: IO[bytes]) -> IO[bytes]:
+    report_file = tempfile.NamedTemporaryFile(delete=False, delete_on_close=False)
+    _ = subprocess.run(
+        [mode.value, "-datafile", data.name, "-shapesfile", shapes.name],
+        stdout=report_file,
+    )
+    
+    return report_file
+
+
+    
+
 @app.post("/validate", )
 def validate(
     data: Annotated[
@@ -103,6 +122,7 @@ def validate(
 ):
     """Validate RDF instance data against SHACL shapes. If shapes are omitted, the default shapes file from the server is used. Supported file formats are rdf-xml, turtle, json-ld and ntriples."""
 
+    # Convert input data to turtle format
     if shapes is None or isinstance(shapes, str):
         shapes_file = open(SHAPES_PATH, 'rb')
     else:
@@ -115,39 +135,40 @@ def validate(
         from_format=RdfMimeType(data.content_type).to_rdflib()
     )
 
-    output = subprocess.run(
-        [
-            "shaclvalidate.sh",
-            "-datafile",
-            data_file.name,
-            "-shapesfile",
-            shapes_file.name,
-        ],
-        stdout=subprocess.PIPE,
+    # Run validation
+    report_file = run_shacl(ShaclCommand.validate, data_file, shapes_file)
+
+    # Convert report to requested format
+    output_file = convert_rdf_file(
+        report_file,
+        from_format="turtle",
+        to_format=RdfMimeType(headers.accept).to_rdflib()
     )
 
-    if isinstance(shapes, UploadFile) and shapes_file.name != SHAPES_PATH:
-        os.unlink(shapes_file.name)
-    os.unlink(data_file.name)
+    try:
+        return FileResponse(output_file.name, media_type=headers.accept)
+    finally:
+        # Cleanup temporary files
+        if isinstance(shapes, UploadFile) and shapes_file.name != SHAPES_PATH:
+            os.unlink(shapes_file.name)
+        for tmp in (data_file, report_file, output_file):
+            os.unlink(tmp.name)
 
-    if headers.accept == RdfMimeType.turtle:
-        report = output.stdout
-    else:
-        report = (
-            Graph()
-            .parse(data=output.stdout, format="turtle")
-            .serialize(format=RdfMimeType(headers.accept).to_rdflib())
-        )
-
-    return Response(content=report, media_type=headers.accept)
-
-
-@app.post("/inference")
-def inference(
-    data: Annotated[UploadFile, File()],
-    shapes: Annotated[Optional[UploadFile], File()] = None,
-    headers: Annotated[FormatHeaders, Header()] = FormatHeaders(),
+@app.post("/infer", )
+def infer(
+    data: Annotated[
+        UploadFile,
+        File(description="RDF file with instance data to validate.")
+    ],
+    shapes: Annotated[
+        Union[UploadFile, str, None],
+        File(description="SHACL shapes file. Default: None.")
+    ] = None,
+    headers: Annotated[
+        FormatHeaders,
+        Header(description="Request headers for RDF format")] = FormatHeaders(),
 ):
+    """Runs SHACL inference on RDF instance data using provided shapes. If shapes are omitted, the default shapes file from the server is used. Supported file formats are rdf-xml, turtle, json-ld and ntriples."""
 
     output = subprocess.run(
         ["shaclinfer.sh", "-datafile", "datafile.ttl", "-shapesfile", "shapesfile.ttl"],
