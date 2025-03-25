@@ -24,22 +24,10 @@ If you do not provide your custom shapes, the server will use its configured def
 
 You can control RDF serialization formats through appropriate http headers.
 
-A client request from python may look like this:
+## Resources
 
-```python
-import requests
-
-url = 'http://localhost:15400/validate'
-
-# See: https://requests.readthedocs.io/en/latest/api/#requests.request
-files = {
-    'data':   ('data.nt',   open('data/ex/data.nt', 'rb'),   'text/turtle'),
-    'shapes': ('shapes.nt', open('data/ex/shapes.nt', 'rb'), 'text/turtle'),
-}
-
-resp = requests.post(url=url, files=files, headers={'Accept': 'application/n-triples'})
-```
-
+* [Repository](https://github.com/sdsc-ordes/shacl-api)
+* [Example requests](https://github.com/sdsc-ordes/shacl-api/tree/main/examples/requests)
 """
 
 app = FastAPI(
