@@ -1,15 +1,15 @@
 import io
 import requests
 
-url = 'http://localhost:15400/validate'
+url = 'http://localhost:8001/validate'
 headers = {'Accept': 'application/n-triples'}
 
 # Providing both data and shapes:
 
 # See: https://requests.readthedocs.io/en/latest/api/#requests.request
 files = {
-    'data':   ('data.nt',   open('data/ex/data.nt', 'rb'),   'text/turtle'),
-    'shapes': ('shapes.nt', open('data/ex/shapes.nt', 'rb'), 'text/turtle'),
+    'data':   ('val_ok_data.ttl',   open('tests/data/val_ok_data.ttl', 'rb'),   'text/turtle'),
+    'shapes': ('val_ok_shapes.ttl', open('tests/data/val_ok_shapes.ttl', 'rb'), 'text/turtle'),
 }
 
 resp = requests.post(url=url, files=files, headers=headers)
@@ -17,7 +17,7 @@ resp = requests.post(url=url, files=files, headers=headers)
 # Validating input data with default server shapes:
 
 data_file = {
-    'data':   ('data.nt',   open('data/ex/data.nt', 'rb'),   'text/turtle'),
+    'data':   ('val_ok_data.ttl',   open('tests/data/val_ok_data.ttl', 'rb'),   'text/turtle'),
 }
 resp = requests.post(url=url, files=data_file, headers=headers)
 
