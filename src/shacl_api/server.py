@@ -1,4 +1,3 @@
-from enum import Enum
 import os
 import tempfile
 from typing import Annotated, Union
@@ -9,6 +8,7 @@ from pydantic import BaseModel
 
 from . import __version__
 from .io import convert_rdf_file
+from .mimetypes import RdfMimeType
 from .run import ShaclCommand, run_shacl
 
 description = """
@@ -54,27 +54,6 @@ def index():
         "title": "Hello, welcome to the SHACL API v0.0.5. Compatible with Ontology v0.8."
     }
 
-class RdfMimeType(str, Enum):
-    """MIME types for supported RDF serialization formats."""
-    jsonld = "application/ld+json"
-    json = "application/json"
-    turtle = "text/turtle"
-    ntriples = "application/n-triples"
-    rdfxml = "application/rdf+xml"
-    
-    def to_rdflib(self):
-        """Translates mimetypes to rdflib format names."""
-        match self:
-            case RdfMimeType.jsonld:
-                return "json-ld"
-            case RdfMimeType.json:
-                return "json-ld"
-            case RdfMimeType.turtle:
-                return "turtle"
-            case RdfMimeType.ntriples:
-                return "ntriples"
-            case RdfMimeType.rdfxml:
-                return "xml"
 
 class FormatHeaders(BaseModel):
     """Common headers for RDF formats."""

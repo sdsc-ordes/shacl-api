@@ -1,10 +1,17 @@
-import os
 import streamlit as st
+from pathlib import Path
 import requests
-import base64
+
+from shacl_api.mimetypes import RdfMimeType
+
+def get_mimetype(filename: str) -> str:
+    ext = Path(filename).suffix
+
+    return RdfMimeType.from_extension(ext)
 
 # This interface is for uploading the files and getting the files back
-API_PORT = 15400
+DEFAULT_API_PORT = 15400
+HOST = "http://localhost"
 
 st.set_page_config(layout="wide")
 
@@ -25,49 +32,54 @@ with colb:
     )
 
 with colc:
-    port = st.radio("Which port is the API using?", (f"{API_PORT}", "8000"))
+    PORT = st.radio("Which port is the API using?", (f"{DEFAULT_API_PORT}", "8000"))
 
 
 st.markdown("""---""")
 col1, col2, col3 = st.columns(3)
 with col1:
-    st.markdown("## Datafile")
-    datafile = st.file_uploader("datafile")
+    st.markdown("## Data File")
+    datafile = st.file_uploader("data")
     if datafile:
-        datafile = datafile.read()
-        with st.expander("See datafile"):
-            st.code(datafile.decode())
-
-        datafile64 = base64.b64encode(datafile)
+        with st.expander("See data file"):
+            st.code(datafile.read().decode())
 
 with col2:
-    st.markdown("## ShapesFile")
-    shapesfile = st.file_uploader("shapesfile")
+    st.markdown("## Shapes File")
+    shapesfile = st.file_uploader("shapes")
     if shapesfile:
-        shapesfile = shapesfile.read()
-        with st.expander("See shapesfile"):
-            st.code(shapesfile.decode())
-
-        shapesfile64 = base64.b64encode(shapesfile)
+        with st.expander("See shapes file"):
+            st.code(shapesfile.read().decode())
 
 with col3:
-    st.markdown("## SHACL Output")
+    st.markdown("## Validation report")
     calculate = st.button("Calculate")
 
-    if calculate:
-        payload = {"datafile": datafile64, "shapesfile": shapesfile64}
+    if calculate and datafile:
+        payload = {
+            "data": ("data", datafile, get_mimetype(datafile.name)),
+        }
 
-        if option == "Validation":
-            url = f"http://127.0.0.1:{port}/validate"
-        elif option == "Inference":
-            url = f"http://127.0.0.1:{port}/inference"
+        if shapesfile:
+            payload["shapes"] = ("shapes", shapesfile,get_mimetype(shapesfile.name))
 
-        r = requests.post(url, data=payload)
-        output = r.json()["output"]
-        with st.expander("See Output"):
+        match option:
+            case "Validation":
+                path = "/validate"
+            case "Inference":
+                path = "/infer"
+            case _:
+                raise ValueError("Invalid option")
+
+        url = f"{HOST}:{PORT}{path}"
+
+        r = requests.post(url, files=payload, headers={"Accept": "application/json"})
+        output = r.json()
+        print(output)
+        with st.expander("See SHACL output"):
             st.code(output)  # line_numbers
 
-        st.download_button("Download TTL", output, file_name="output.ttl")
+        st.download_button("Download report", output, file_name="output.ttl")
 
 
 st.markdown("""---""")
@@ -78,26 +90,20 @@ with col4:
     st.markdown("## How to use the API in python?")
     with st.expander("See Code"):
         st.code(
-            """
+            f"""
         import requests 
-        import base64
-        with open('../tests/tests-files/val_imagingID.ttl', 'rb') as file:
-            datafile = file.read()
+        data_file = open('../tests/data/val_ok_data.ttl', 'rb')
+        shapes_file = open('../tests/data/val_ok_shapes.ttl', 'rb')
 
-        with open('../tests/tests-files/val_ImagingOntologyShapes.ttl', 'rb') as file:
-            shapesfile = file.read()
+        payload = {{
+            "data": ("data.ttl", data_file, "text/turtle"),
+            "shapes": ("shapes.ttl", shapes_file, "text/turtle")
+        }}
 
-        datafile64 = base64.b64encode(datafile) 
-        shapesfile64 = base64.b64encode(shapesfile)
-
-        payload = {"datafile": datafile64,
-                "shapesfile": shapesfile64}
-
-        url = "http://127.0.0.1:8000/validate"
-        r = requests.post(url, data=payload)
+        url = "{HOST}:{PORT}/validate"
+        r = requests.post(url, files=payload, headers={{'Accept': 'application/json'}})
 
         output = r.json()["output"]
-            
         """,
             language="python",
         )
