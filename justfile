@@ -4,8 +4,9 @@ set shell := ["bash", "-cue"]
 
 version := `git describe --tags --abbrev=0`
 image := "ghcr.io/sdsc-ordes/shacl-api"
-root_dir := `git rev-parse --show-toplevel`
-
+root_dir := justfile_dir()
+export SHACLROOT := root_dir / "external/shacl/bin"
+export PATH := SHACLROOT + x":${PATH}"
 
 # Default recipe to list all recipes.
 [private]
@@ -13,8 +14,13 @@ default:
   just --list --no-aliases
 
 # Setup project for development
-install: 
+install:
   uv pip install -e '.[webapp,test,dev]'
+
+# Fetch external dependencies
+fetch:
+  vendir sync --locked -f vendir.yaml --chdir external
+  chmod -R u+x external/shacl/bin
 
 # Lint python code
 lint: install
@@ -24,16 +30,12 @@ lint: install
 test: install 
   uv run pytest
 
-# Fetch external dependencies
-fetch:
-  vendir sync -f vendir.yaml --chdir external
-
 # Run the API server
 serve *args: install
   uv run python -m uvicorn src.shacl_api.server:app --host 0.0.0.0 --port 15400 {{args}}
 
 # Serve and reload on file changes
-watch: 
+watch:
   just serve --reload
 
 alias dev := nix-develop
