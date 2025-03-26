@@ -24,6 +24,10 @@ lint: install
 test: install 
   uv run pytest
 
+# Fetch external dependencies
+fetch:
+  vendir sync -f vendir.yaml --chdir external
+
 # Run the API server
 serve *args: install
   uv run python -m uvicorn src.shacl_api.server:app --host 0.0.0.0 --port 15400 {{args}}

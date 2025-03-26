@@ -1,0 +1,10 @@
+apiVersion: vendir.k14s.io/v1alpha1
+kind: Config
+directories:
+
+- path: shacl
+  contents:
+  - path: .
+    git:
+      url: https://github.com/topquadrant/shacl
+      ref: origin/v1.4.4

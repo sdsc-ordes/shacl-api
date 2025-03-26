@@ -1,4 +1,5 @@
 data/*
+external/shacl/
 .DS_Store
 ci/*.log
 ci/*.txt

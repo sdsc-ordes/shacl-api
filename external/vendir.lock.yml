@@ -1,0 +1,11 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - git:
+      commitTitle: '[maven-release-plugin] prepare release v1.4.4'
+      sha: a40627da5df455535d3519eb6629057ab52a2843
+      tags:
+      - v1.4.4
+    path: .
+  path: shacl
+kind: LockConfig
