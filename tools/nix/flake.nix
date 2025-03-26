@@ -40,6 +40,7 @@
             just
             kubectl
             sops
+            temurin-bin
             uv
             vendir
             yamlfmt
