@@ -31,12 +31,17 @@ test: install
   uv run pytest
 
 # Run the API server
-serve *args: install
-  uv run python -m uvicorn src.shacl_api.server:app --host 0.0.0.0 --port 15400 {{args}}
+serve shapes_path opts="": install
+  SHAPES_PATH="{{shapes_path}}" uv run python \
+    -m uvicorn \
+    src.shacl_api.server:app \
+      --host 0.0.0.0 \
+      --port 15400 \
+      {{opts}}
 
 # Serve and reload on file changes
-watch:
-  just serve --reload
+watch shapes_path:
+  just serve {{shapes_path}} "--reload"
 
 alias dev := nix-develop
 # Enter a Nix development shell.
