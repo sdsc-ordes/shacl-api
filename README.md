@@ -1,4 +1,4 @@
-# shaclAPI
+# shacl-api
 
 Web server for RDF data validation, wrapping the TopBraid Shacl API tool. 
 Based on https://github.com/SDSC-ORD/shacl
