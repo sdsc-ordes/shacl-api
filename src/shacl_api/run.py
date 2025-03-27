@@ -3,10 +3,13 @@ from typing import IO
 import subprocess
 import tempfile
 
+
 class ShaclCommand(str, Enum):
     """Supported SHACL commands."""
+
     validate = "shaclvalidate.sh"
     infer = "shaclinfer.sh"
+
 
 def run_shacl(mode: ShaclCommand, data_path: str, shapes_path: str) -> IO[bytes]:
     """Run the shacl command line tool."""
@@ -16,5 +19,5 @@ def run_shacl(mode: ShaclCommand, data_path: str, shapes_path: str) -> IO[bytes]
         stdout=report_file,
     )
     report_file.seek(0)
-    
+
     return report_file

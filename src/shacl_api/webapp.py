@@ -4,10 +4,12 @@ import requests
 
 from shacl_api.mimetypes import RdfMimeType
 
+
 def get_mimetype(filename: str) -> str:
     ext = Path(filename).suffix
 
     return RdfMimeType.from_extension(ext)
+
 
 # This interface is for uploading the files and getting the files back
 DEFAULT_API_PORT = 15400
@@ -61,7 +63,7 @@ with col3:
         }
 
         if shapesfile:
-            payload["shapes"] = ("shapes", shapesfile,get_mimetype(shapesfile.name))
+            payload["shapes"] = ("shapes", shapesfile, get_mimetype(shapesfile.name))
 
         match option:
             case "Validation":

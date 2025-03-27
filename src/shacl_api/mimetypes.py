@@ -1,14 +1,16 @@
 from __future__ import annotations
 from enum import Enum
 
+
 class RdfMimeType(str, Enum):
     """MIME types for supported RDF serialization formats."""
+
     jsonld = "application/ld+json"
     json = "application/json"
     turtle = "text/turtle"
     ntriples = "application/n-triples"
     rdfxml = "application/rdf+xml"
-    
+
     def to_extension(self) -> str:
         """Translates mimetypes to file extensions."""
         match self:

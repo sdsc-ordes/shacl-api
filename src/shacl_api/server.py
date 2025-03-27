@@ -57,15 +57,21 @@ def index():
 
 class FormatHeaders(BaseModel):
     """Common headers for RDF formats."""
+
     accept: RdfMimeType = RdfMimeType.jsonld
 
 
-def _wrap_shacl(mode: ShaclCommand, data: UploadFile, shapes: Union[UploadFile, str, None], headers: FormatHeaders):
+def _wrap_shacl(
+    mode: ShaclCommand,
+    data: UploadFile,
+    shapes: Union[UploadFile, str, None],
+    headers: FormatHeaders,
+):
     """Wrap SHACL command execution and RDF format conversion for use in endpoints."""
 
     # Fall back on server shapes if none are provided
     if shapes is None or isinstance(shapes, str):
-        shapes_source = open(SHAPES_PATH, 'rb')
+        shapes_source = open(SHAPES_PATH, "rb")
         shapes_format = "turtle"
     else:
         shapes_source = shapes.file
@@ -95,26 +101,28 @@ def _wrap_shacl(mode: ShaclCommand, data: UploadFile, shapes: Union[UploadFile, 
     convert_rdf_file(
         in_file=report_ttl,
         to_file=report_file,
-        to_format=RdfMimeType(headers.accept).to_rdflib()
+        to_format=RdfMimeType(headers.accept).to_rdflib(),
     )
     os.remove(report_ttl.name)
 
     # NOTE: FastAPI automatically deletes the response file
     return FileResponse(report_file.name, media_type=headers.accept)
 
-@app.post("/validate", )
+
+@app.post(
+    "/validate",
+)
 def validate(
     data: Annotated[
-        UploadFile,
-        File(description="RDF file with instance data to validate.")
+        UploadFile, File(description="RDF file with instance data to validate.")
     ],
     shapes: Annotated[
         Union[UploadFile, str, None],
-        File(description="SHACL shapes file. Default: None.")
+        File(description="SHACL shapes file. Default: None."),
     ] = None,
     headers: Annotated[
-        FormatHeaders,
-        Header(description="Request headers for RDF format")] = FormatHeaders(),
+        FormatHeaders, Header(description="Request headers for RDF format")
+    ] = FormatHeaders(),
 ):
     """Validate RDF instance data against SHACL shapes.
     If shapes are omitted, the default shapes file from the server is used.
@@ -123,19 +131,21 @@ def validate(
     return _wrap_shacl(ShaclCommand.validate, data, shapes, headers)
 
 
-@app.post("/infer", )
+@app.post(
+    "/infer",
+)
 def infer(
     data: Annotated[
         UploadFile,
-        File(description="RDF file with instance data on which to run inference.")
+        File(description="RDF file with instance data on which to run inference."),
     ],
     shapes: Annotated[
         Union[UploadFile, str, None],
-        File(description="SHACL shapes file. Default: None.")
+        File(description="SHACL shapes file. Default: None."),
     ] = None,
     headers: Annotated[
-        FormatHeaders,
-        Header(description="Request headers for RDF format")] = FormatHeaders(),
+        FormatHeaders, Header(description="Request headers for RDF format")
+    ] = FormatHeaders(),
 ):
     """Runs SHACL inference on RDF instance data using provided shapes. If shapes are omitted, the default shapes file from the server is used. Supported file formats are rdf-xml, turtle, json-ld and ntriples."""
 

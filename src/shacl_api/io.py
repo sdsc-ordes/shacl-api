@@ -3,11 +3,12 @@ from typing import IO
 
 from rdflib import Graph
 
+
 def convert_rdf_file(
     in_file: IO[bytes],
     to_file: IO[bytes],
-    in_format: str="turtle",
-    to_format: str="turtle",
+    in_format: str = "turtle",
+    to_format: str = "turtle",
 ):
     """Convert RDF data to Turtle format if not already in Turtle."""
     if in_format == to_format:
