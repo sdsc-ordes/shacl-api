@@ -3,7 +3,19 @@
 Web server for RDF data validation, wrapping the TopBraid Shacl API tool. 
 Based on https://github.com/SDSC-ORD/shacl
 
-## Setup
+## Usage
+
+The easiest way to use tha API is to run the docker image:
+
+```bash
+# Only REST API
+docker run -it --rm -p 8000:15400 --env-file .env ghcr.io/sdsc-ordes/shacl-api:latest 
+
+# REST API + web server
+docker run -it --rm -p 8000:15400 -p 8501:8501 --env-file .env ghcr.io/sdsc-ordes/shacl-api:latest-webapp
+```
+
+## Development setup
 
 ### Requirements
 
@@ -11,9 +23,15 @@ Based on https://github.com/SDSC-ORD/shacl
 * nix: We provide all the tools you need to work on this project in a nix development shell. See here to install nix: https://determinate.systems/nix-installer/
 * docker: Only required to build and run the containerized api.
 
-## Usage
+### With nix
 
-### Get started
+The nix dev-shell contains all dependencies to run the project. Once you're inside, you can run `just serve` to start the server, or `just watch` to automatically reload it on file changes.
+
+This is recommended for development.
+
+> [!NOTE]
+> Alternatively, if just is not installed, you may enter the devshell directly with:
+> `nix develop ./tools/nix#default --accept-flake-config --command "zsh"`
 
 First, enter the dev-shell:
 
@@ -33,36 +51,16 @@ Finally, start the server:
 just serve ./tests/data/val_ok_shapes.ttl
 ```
 
-> [!NOTE]
-> Alternatively, if just is not installed, you may enter the devshell directly with:
-> `nix develop ./tools/nix#default --accept-flake-config --command "zsh"`
-
-Containers use the `.env` file in the repository, before running them, you should copy `.env.dist` to `.env` and set desired values for your shapes.
-
-### With nix
-
-The nix dev-shell contains all dependencies to run the project. Once you're inside, you can run `just serve` to start the server, or `just watch` to automatically reload it on file changes.
-
-This is recommended for development.
-
-
-### With docker
+### Docker images
 
 We build two docker images, a small "headless" version with only the REST server, and a larger image that bundles the REST server and a streamlit web application. These two images are differentiated by their tag: `<version>` vs `<version>-webapp`.
 
+
+> [!NOTE]
+> Containers use the `.env` file in the repository, before running them, you should copy `.env.dist` to `.env` and set desired values for your shapes.
+
 ```bash
 just image build
-```
-
-The docker images can be run as follows:
-
-```
-# Only REST API
-docker run -it --rm -p 8000:15400 --env-file .env ghcr.io/sdsc-ordes/shacl-api:latest 
-
-# REST API + web server
-docker run -it --rm -p 8000:15400 -p 8501:8501 --env-file .env ghcr.io/sdsc-ordes/shacl-api:latest-webapp
-# or
 just image run
 ```
 
@@ -70,7 +68,7 @@ just image run
 
 For development, it may be more convenient to use our docker compose stack.
 
-```
+```bash
 just image compose-up
 ```
 
