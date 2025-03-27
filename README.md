@@ -22,16 +22,17 @@ just dev
 > Alternatively, you may enter the devshell directly with :
 > `nix develop ./tools/nix#default --accept-flake-config --command "zsh"`
 
-The server and containers use the `.env` file in the repository, before running them, you should copy `.env.dist` to `.env` and set desired values for the variables inside.
+The server and containers use the `.env` file in the repository, before running them, you should copy `.env.dist` to `.env` and set desired values to point to your shapes.
 
 ### With nix
 
-The nix dev-shell contains all dependencies to run the project. Once you're inside, you can run `just serve` to start the server, or `just watch` to automatically reload it when the source files changes.
+The nix dev-shell contains all dependencies to run the project. Once you're inside, you can run `just serve` to start the server, or `just watch` to automatically reload it on file changes.
 
 This is recommended for development.
 
 > [!TIP]
-> If the variables in your `.env` are set up for the docker image, you may want to override the variable directly, e.g. `SHAPES_PATH=./tests/data/val_ok_shapes.ttl just serve`
+> If the variables in your `.env` are set up for the docker image, you may want to override the variable directly, e.g.:
+> `SHAPES_PATH=./tests/data/val_ok_shapes.ttl just serve`
 
 ### With docker
 
