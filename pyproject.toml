@@ -15,6 +15,7 @@ license-files = ["LICEN[CS]E*"]
 dynamic = ["version"]
 
 dependencies = [
+  "email-validator>=2.2.0",
   "fastapi",
   "python-multipart",
   "rdflib",
