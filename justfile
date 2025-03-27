@@ -27,8 +27,8 @@ lint: install
   uv run ruff check src
 
 # Run unit tests
-test: install 
-  uv run pytest
+test *args: install
+  uv run pytest {{args}}
 
 # Run the API server
 serve shapes_path opts="": install
