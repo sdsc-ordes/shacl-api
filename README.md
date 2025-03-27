@@ -19,9 +19,9 @@ docker run -it --rm -p 8000:15400 -p 8501:8501 --env-file .env ghcr.io/sdsc-orde
 
 ### Requirements
 
-* just: This repository contains a [justfile](./justfile), and we use [`just`](https://github.com/casey/just) as a command runner.
-* nix: We provide all the tools you need to work on this project in a nix development shell. See here to install nix: https://determinate.systems/nix-installer/
-* docker: Only required to build and run the containerized api.
+* **just:** This repository contains a [justfile](./justfile), and we use [`just`](https://github.com/casey/just) as a command runner.
+* **nix:** We provide all the tools you need to work on this project in a nix development shell. See here to install nix: https://determinate.systems/nix-installer/
+* **docker:** Only required to build and run the containerized api.
 
 ### With nix
 
