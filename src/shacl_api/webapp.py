@@ -80,8 +80,8 @@ with col3:
 
         url = f"{HOST}:{PORT}{path}"
 
-        r = requests.post(url, files=payload, headers={"Accept": "application/json"})
-        output = json.dumps(r.json())
+        r = requests.post(url, files=payload, headers={"Accept": "text/turtle"})
+        output = r.text
         with st.expander("See SHACL output"):
             st.code(output)  # line_numbers
 
