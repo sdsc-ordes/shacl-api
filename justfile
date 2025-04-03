@@ -2,7 +2,7 @@ set positional-arguments
 set dotenv-load
 set shell := ["bash", "-cue"]
 
-version := `git describe --tags --abbrev=0`
+version := env("VERSION", `git describe --tags --abbrev=0`)
 image := "ghcr.io/sdsc-ordes/shacl-api"
 root_dir := justfile_dir()
 export SHACLROOT := root_dir / "external/shacl/bin"

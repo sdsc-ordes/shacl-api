@@ -2,8 +2,8 @@
 set positional-arguments
 set shell := ["bash", "-cue"]
 root_dir := `git rev-parse --show-toplevel`
-ctr := "docker"
-version := `git describe --tags --abbrev=0`
+ctr := env("CTR", "docker")
+version := env("VERSION", `git describe --tags --abbrev=0`)
 image := "ghcr.io/sdsc-ordes/shacl-api:" + version
 image_dir := root_dir + "/tools/image"
 
