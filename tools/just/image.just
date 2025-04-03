@@ -29,12 +29,13 @@ build *args:
 
 # Run docker image
 run *args: build
+  @echo "🐋 Running docker image"
   cd {{root_dir}} && \
     {{ctr}} run \
       -it \
       --rm \
       --env-file .env \
-      -p 8000:15400 \
+      -p 8000:8000 \
       -p 8501:8501 \
       {{args}} \
       {{image}}-webapp

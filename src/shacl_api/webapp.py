@@ -14,7 +14,8 @@ def get_mimetype(filename: str) -> str:
 
 
 # This interface is for uploading the files and getting the files back
-DEFAULT_API_PORT = 15400
+
+DEFAULT_API_PORT = os.environ.get("UVICORN_PORT", "15400")
 HOST = "http://localhost"
 
 st.set_page_config(layout="wide")

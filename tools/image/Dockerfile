@@ -14,6 +14,8 @@ LABEL org.opencontainers.image.version=${VERSION}
 # unset or set to "" to disable shapes download
 ENV SHAPES_URL=""
 ENV SHAPES_PATH="/data/shapes.ttl"
+ENV UVICORN_PORT=8000
+ENV STREAMLIT_BROWSER_SERVER_PORT=8501
 ENV PATH="${PATH}:/home/appuser/.local/bin"
 
 RUN apk update && apk add \
