@@ -15,7 +15,8 @@ default:
 
 # Setup project for development
 install:
-  uv pip install -e '.[webapp,test,dev]'
+  rm -f uv.lock && \
+    uv pip install -e '.[webapp,test,dev]'
 
 # Fetch external dependencies
 fetch:
