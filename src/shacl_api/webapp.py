@@ -48,6 +48,7 @@ with col1:
     if datafile:
         with st.expander("See data file"):
             st.code(datafile.read().decode())
+            datafile.seek(0)
 
 with col2:
     st.markdown("## Shapes File")
@@ -55,6 +56,7 @@ with col2:
     if shapesfile:
         with st.expander("See shapes file"):
             st.code(shapesfile.read().decode())
+            shapesfile.seek(0)
 
 with col3:
     st.markdown("## Validation report")
