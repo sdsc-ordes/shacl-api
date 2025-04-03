@@ -1,3 +1,5 @@
+import json
+import os
 import streamlit as st
 from pathlib import Path
 import requests
@@ -6,9 +8,9 @@ from shacl_api.mimetypes import RdfMimeType
 
 
 def get_mimetype(filename: str) -> str:
-    ext = Path(filename).suffix
+    ext = Path(filename).suffix.removeprefix(".")
 
-    return RdfMimeType.from_extension(ext)
+    return RdfMimeType.from_extension(ext).value
 
 
 # This interface is for uploading the files and getting the files back
@@ -76,8 +78,7 @@ with col3:
         url = f"{HOST}:{PORT}{path}"
 
         r = requests.post(url, files=payload, headers={"Accept": "application/json"})
-        output = r.json()
-        print(output)
+        output = json.dumps(r.json())
         with st.expander("See SHACL output"):
             st.code(output)  # line_numbers
 
