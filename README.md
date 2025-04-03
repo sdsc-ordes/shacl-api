@@ -9,10 +9,10 @@ The easiest way to use tha API is to run the docker image:
 
 ```bash
 # Only REST API
-docker run -it --rm -p 8000:15400 --env-file .env ghcr.io/sdsc-ordes/shacl-api:latest 
+docker run -it --rm -p 8000:8000 --env-file .env ghcr.io/sdsc-ordes/shacl-api:latest 
 
 # REST API + web server
-docker run -it --rm -p 8000:15400 -p 8501:8501 --env-file .env ghcr.io/sdsc-ordes/shacl-api:latest-webapp
+docker run -it --rm -p 8000:8000 -p 8501:8501 --env-file .env ghcr.io/sdsc-ordes/shacl-api:latest-webapp
 ```
 
 ## Development setup
