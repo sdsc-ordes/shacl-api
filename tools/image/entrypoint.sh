@@ -32,9 +32,9 @@ fi
 
 # Start webapp if enabled
 if [ "$1" == "webapp" ]; then
-    nohup streamlit run /shacl-api/src/shacl-api/webapp.py --server.port 8501 &
+    nohup streamlit run /shacl-api/src/shacl_api/webapp.py &
 fi
 
 # Start API server
-python3 -m uvicorn src.shacl-api.server:app --host 0.0.0.0 --port 15400
+python3 -m uvicorn src.shacl_api.server:app --host 0.0.0.0
 
