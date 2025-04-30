@@ -36,5 +36,5 @@ if [ "$1" == "webapp" ]; then
 fi
 
 # Start API server
-python3 -m uvicorn src.shacl_api.server:app --host 0.0.0.0
+python3 -m uvicorn src.shacl_api.server:app --reload --host 0.0.0.0
 
