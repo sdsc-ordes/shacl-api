@@ -24,7 +24,7 @@ spec:
         - name: #@ v.name
           image: #@ v.image
           ports:
-            - containerPort: 15400
+            - containerPort: 8000
           env:
             - name: SHAPES_PATH
               value: #@ v.shapes.path
