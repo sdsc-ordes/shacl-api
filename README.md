@@ -1,45 +1,88 @@
-# shaclAPI
-Implementation of Imaging Plaza Microservice for SHACL Validation
+# shacl-api
 
-Based in https://github.com/SDSC-ORD/shacl
+Web server for RDF data validation, wrapping the TopBraid Shacl API tool. 
+Based on https://github.com/SDSC-ORD/shacl
 
-## How to use it?
+## Usage
 
+The easiest way to use tha API is to run the docker image:
 
+```bash
+# Only REST API
+docker run -it --rm -p 8000:8000 --env-file .env ghcr.io/sdsc-ordes/shacl-api:latest 
 
-## How to use docker?
-
-```
-docker build -t caviri/shaclapi:latest . 
-```
-
-```
-docker run -it --rm -p 8000:15400 -p 8501:8501 caviri/shaclapi:latest 
-docker run -it --rm -p 7200:15400 -p 3000:8501 caviri/shaclapi:latest 
+# REST API + web server
+docker run -it --rm -p 8000:8000 -p 8501:8501 --env-file .env ghcr.io/sdsc-ordes/shacl-api:latest-webapp
 ```
 
-```
-docker-compose up # add -d for detached
+## Development setup
+
+### Requirements
+
+* **just:** This repository contains a [justfile](./justfile), and we use [`just`](https://github.com/casey/just) as a command runner.
+* **nix:** We provide all the tools you need to work on this project in a nix development shell. See here to install nix: https://determinate.systems/nix-installer/
+* **docker:** Only required to build and run the containerized api.
+
+### With nix
+
+The nix dev-shell contains all dependencies to run the project. Once you're inside, you can run `just serve` to start the server, or `just watch` to automatically reload it on file changes.
+
+This is recommended for development.
+
+> [!NOTE]
+> Alternatively, if just is not installed, you may enter the devshell directly with:
+> `nix develop ./tools/nix#default --accept-flake-config --command "zsh"`
+
+First, enter the dev-shell:
+
+```bash
+just dev
 ```
 
-## LOGS
+Then fetch the third party [shacl](https://github.com/topquadrant/shacl) tool:
 
-```
-if [ $1 == validate ] ; then
-	set -- shaclvalidate.sh "$@"
-elif [ $1 == infer ] ; then
-	set -- shaclinfer.sh "$@"
+```bash
+just fetch
 ```
 
-```
-root@cbb169b97823:/# shaclvalidate.sh
-Missing -datafile, e.g.: -datafile myfile.ttl
-root@cbb169b97823:/# shaclinfer.sh
-Missing -datafile, e.g.: -datafile myfile.ttl
+Finally, start the server:
+
+```bash
+just serve ./tests/data/val_ok_shapes.ttl
 ```
 
-# Changelog
+### Docker images
 
-- v0.0.5: Update Ontology to v0.8
-- v0.0.4: Update Ontology to v0.6
-- v0.0.3: Update shapesfile to v0.0.3
+We build two docker images, a small "headless" version with only the REST server, and a larger image that bundles the REST server and a streamlit web application. These two images are differentiated by their tag: `<version>` vs `<version>-webapp`.
+
+
+> [!NOTE]
+> Containers use the `.env` file in the repository, before running them, you should copy `.env.dist` to `.env` and set desired values for your shapes.
+
+```bash
+just image build
+just image run
+```
+
+### With docker compose
+
+For development, it may be more convenient to use our docker compose stack.
+
+```bash
+just image compose-up
+```
+
+## Deployment
+
+We provide manifests to deploy the service on kubernetes.
+The manifest templates in [tools/deploy](tools/deploy) are managed with ytt and can be rendered using:
+
+```bash
+just manifests render
+```
+
+Or deployed directly with:
+
+```bash
+just manifests deploy
+```

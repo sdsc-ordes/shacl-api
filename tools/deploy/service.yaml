@@ -1,0 +1,17 @@
+#@ load("@ytt:data", "data")
+#@ load("common.lib.star", "resourceLabels")
+#@ v = data.values
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: #@ v.name
+  labels: #@ resourceLabels(v)
+spec:
+  type: ClusterIP
+  ports:
+    - name: "8000"
+      port: 8000
+      targetPort: 8000
+  selector: #@ resourceLabels(v)

@@ -1,0 +1,22 @@
+# Recipes for rendering and deploying manifests to a Kubernetes cluster.
+# Secrets are loaded from the .env file at the root of the project.
+root_dir := `git rev-parse --show-toplevel`
+deploy_dir := root_dir + "/tools/deploy"
+set positional-arguments
+set shell := ["bash", "-cue"]
+
+# Default recipe to list all recipes.
+[private]
+default:
+  just --list manifests --no-aliases
+
+# Render manifests
+render: 
+  cd "{{root_dir}}" && \
+    ytt -f {{deploy_dir}}/
+
+alias apply := deploy
+# Apply manifests to the cluster.
+deploy:
+  just manifests render \
+    | kubectl apply -f-

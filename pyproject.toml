@@ -1,0 +1,47 @@
+[project]
+name = "shacl-api"
+authors = [
+  { name="Swiss Data Science Center", email="contact@datascience.ch" },
+]
+description = "Web service for the TopBraid SHACL validator."
+readme = "README.md"
+requires-python = ">=3.11"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "AGPL-3.0"
+license-files = ["LICEN[CS]E*"]
+dynamic = ["version"]
+
+dependencies = [
+  "email-validator>=2.2.0",
+  "fastapi",
+  "python-multipart",
+  "rdflib",
+  "uvicorn",
+]
+
+[project.urls]
+Homepage = "https://github.com/sdsc-ordes/shacl-api"
+Issues = "https://github.com/sdsc-ordes/shacl-api/issues"
+
+[project.optional-dependencies]
+dev = [
+  "ruff",
+  "pre-commit",
+]
+test = [
+    "pytest",
+]
+webapp = [
+  "streamlit",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "src/shacl_api/__init__.py"
+pattern = '__version__ = "(?P<version>[^"]+)"'
